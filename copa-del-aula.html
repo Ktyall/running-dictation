@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Running Dictation · La Copa del Aula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7F2; --ink:#1B1810; --card:#FBF7EE;
+    --terra:#C8553D; --pine:#234B3D; --ochre:#C98A28; --brick:#B23A2E;
+    --line:rgba(27,24,16,.16);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; line-height:1.45;
+    padding:26px 16px 60px; display:flex; justify-content:center;
+  }
+  .wrap{ width:100%; max-width:600px; }
+
+  .kick{ font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--terra); }
+  h1{ font-family:'Archivo',sans-serif; font-weight:800; font-size:clamp(34px,9vw,52px);
+    line-height:.98; letter-spacing:-.02em; margin:.14em 0 .3em; }
+  .lede{ font-size:15px; color:#4a453c; margin:0 0 4px; }
+  .lede b{ color:var(--ink); }
+
+  .board{ display:flex; align-items:center; gap:12px; margin:20px 0 22px;
+    padding:12px 16px; border:1.5px solid var(--line); border-radius:14px; background:var(--card); }
+  .dots{ display:flex; gap:7px; }
+  .dot{ width:16px; height:16px; border-radius:50%; border:2px solid var(--line); background:transparent;
+    transition:transform .25s, background .25s, border-color .25s; }
+  .dot.on{ background:var(--pine); border-color:var(--pine); transform:scale(1.08); }
+  .count{ font-family:'Space Mono',monospace; font-weight:700; font-size:15px; letter-spacing:.08em;
+    margin-left:auto; color:var(--pine); }
+
+  .fx{ display:flex; flex-wrap:wrap; align-items:flex-start; gap:10px 12px;
+    background:var(--card); border:1.5px solid var(--line); border-left:5px solid var(--line);
+    border-radius:14px; padding:14px 16px; margin-bottom:12px;
+    transition:border-color .2s, background .2s; }
+  .fxpip{ flex:0 0 auto; font-family:'Space Mono',monospace; font-size:20px; line-height:1.9;
+    color:#b8b0a2; width:24px; text-align:center; }
+  .fx textarea{ flex:1 1 200px; min-width:0; font-family:'Inter',sans-serif; font-size:16px;
+    line-height:1.4; padding:11px 13px; border:1.5px solid var(--line); border-radius:10px;
+    background:#fff; color:var(--ink); resize:none; height:64px; }
+  .fx textarea:focus{ outline:none; border-color:var(--terra); box-shadow:0 0 0 3px rgba(200,85,61,.16); }
+  .btn{ flex:0 0 auto; font-family:'Inter',sans-serif; font-weight:600; font-size:15px;
+    padding:11px 18px; border:none; border-radius:10px; background:var(--ink); color:var(--paper);
+    cursor:pointer; transition:opacity .15s, transform .05s; }
+  .btn:hover{ opacity:.9; } .btn:active{ transform:translateY(1px); }
+  .stat{ flex:1 1 100%; min-height:18px; font-family:'Space Mono',monospace; font-size:12.5px;
+    letter-spacing:.06em; color:#8a8378; }
+  .stat.warn{ color:var(--ochre); }
+  .trans{ flex:1 1 100%; font-size:13.5px; font-style:italic; color:var(--pine);
+    border-top:1px dashed rgba(35,75,61,.35); margin-top:2px; padding-top:8px; }
+  .trans[hidden]{ display:none; }
+
+  .fx.ok{ border-color:var(--pine); border-left-color:var(--pine); background:rgba(35,75,61,.07); }
+  .fx.ok .fxpip{ color:var(--pine); }
+  .fx.ok textarea{ background:rgba(35,75,61,.06); border-color:var(--pine); color:var(--pine); font-weight:500; }
+  .fx.ok .btn{ background:var(--pine); pointer-events:none; }
+  .fx.ok .stat{ color:var(--pine); font-weight:700; }
+  .fx.miss{ border-color:var(--brick); border-left-color:var(--brick); }
+  .fx.miss textarea{ border-color:var(--brick); }
+  .fx.miss .stat{ color:var(--brick); }
+  .fx.miss{ animation:shake .32s; }
+  @keyframes shake{ 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)}
+    40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(3px)} }
+  .fx.pop{ animation:pop .3s; }
+  @keyframes pop{ 0%{transform:scale(1)} 45%{transform:scale(1.02)} 100%{transform:scale(1)} }
+
+  .final{ margin-top:22px; border:2.5px solid var(--pine); border-radius:18px; padding:30px 24px;
+    text-align:center; background:rgba(35,75,61,.06); opacity:0; transform:translateY(10px);
+    transition:opacity .4s, transform .4s; }
+  .final.show{ opacity:1; transform:none; }
+  .final .trophy{ font-size:40px; }
+  .final h2{ font-family:'Archivo',sans-serif; font-weight:800; font-size:26px; margin:.2em 0 .1em; color:var(--pine); }
+  .final p{ margin:.2em 0 1em; color:#4a453c; font-size:15px; }
+  .code{ display:inline-block; font-family:'Space Mono',monospace; font-weight:700;
+    font-size:clamp(28px,8vw,40px); letter-spacing:.12em; color:var(--paper);
+    background:var(--pine); padding:14px 26px; border-radius:12px; }
+
+  .foot{ margin-top:26px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .rules{ font-size:12.5px; color:#8a8378; font-family:'Space Mono',monospace; letter-spacing:.04em; }
+  .reset{ font-family:'Inter'; font-size:13px; color:#8a8378; background:none; border:none;
+    text-decoration:underline; cursor:pointer; padding:0; }
+  .reset:hover{ color:var(--terra); }
+
+  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">La Copa del Aula · Sesión 2</div>
+  <h1>Running Dictation</h1>
+  <p class="lede">Escriban cada frase <b>exacta</b>: mayúsculas y puntuación.</p>
+  <p class="lede">Cualquier frase va en cualquier casilla. Cambien de corredor y de escritor después de cada gol.</p>
+
+  <div class="board">
+    <div class="dots" id="dots"></div>
+    <div class="count" id="count">0 / 5 GOLES</div>
+  </div>
+
+  <div id="rows"></div>
+
+  <div class="final" id="final" hidden>
+    <div class="trophy">🏆</div>
+    <h2>¡Cancha despejada!</h2>
+    <p>Muéstrale este código al facilitador para registrar tu marca.</p>
+    <div class="code" id="code">—</div>
+  </div>
+
+  <div class="foot">
+    <div class="rules">5 frases · cualquier casilla · exacto o nada</div>
+    <button class="reset" id="reset">Reiniciar tablero</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   CONFIG  ·  edita SOLO esta parte
+   - phrases: 5 objetos { answers:[...], es:"traducción al español" }.
+       answers  = la(s) forma(s) EXACTA(S) que se aceptan (indonesio, sin acentos).
+                  Puedes aceptar variantes: answers:["forma A","forma B"].
+       es       = la traducción que aparece cuando aciertan.
+     Cualquier frase va en cualquier casilla; cada frase cuenta una vez.
+   - code: el código que aparece al completar las 5.
+   - normalizeQuotes: acepta comillas/apóstrofos curvos o rectos por igual.
+   - showTranslation: muestra la traducción al acertar (true/false).
+   ========================================================================= */
+const CONFIG = {
+  phrases: [
+    { answers:["Komunikasi: bertukar informasi, mendengarkan dengan saksama, dan menyampaikan gagasan dengan jelas; secara lisan, tertulis, maupun nonverbal."],
+      es:"Comunicación: intercambiar información, escuchar con atención y expresar ideas con claridad; de forma oral, escrita o no verbal." },
+    { answers:["Keterampilan sosial: bekerja sama, berbagi tanggung jawab, dan menyelesaikan konflik secara adil. Ini membangun kepercayaan dan hubungan yang baik."],
+      es:"Habilidades sociales: colaborar, compartir responsabilidades y resolver conflictos con justicia. Así se construyen la confianza y las buenas relaciones." },
+    { answers:["Manajemen diri: mengatur waktu dan tugas, menetapkan tujuan, dan tetap fokus; menghadapi hambatan dengan tenang."],
+      es:"Autogestión: organizar el tiempo y las tareas, fijar metas y mantener la concentración; enfrentar los obstáculos con calma." },
+    { answers:["Penelitian: mencari, membandingkan, dan menilai informasi secara kritis; menggunakan sumber dengan tepat dan menyebutkannya dengan jujur."],
+      es:"Investigación: buscar, comparar y evaluar la información de forma crítica; usar las fuentes con precisión y citarlas con honestidad." },
+    { answers:["Berpikir: berpikir kritis dan kreatif, memecahkan masalah, dan melihat keterkaitan; menerapkan yang dipelajari pada situasi baru."],
+      es:"Pensamiento: pensar de forma crítica y creativa, resolver problemas y ver relaciones; aplicar lo aprendido a situaciones nuevas." }
+  ],
+  code: "GOLAZO-26",
+  normalizeQuotes: true,
+  showTranslation: true
+};
+/* ===================== fin del CONFIG ===================== */
+
+const N = CONFIG.phrases.length;
+const solvedSet = new Set();
+
+function norm(s){
+  s = String(s).replace(/[\r\n]+/g," ").trim();
+  if(CONFIG.normalizeQuotes){
+    s = s.replace(/[\u2018\u2019\u201B\u2032]/g,"'").replace(/[\u201C\u201D\u2033]/g,'"');
+  }
+  return s;
+}
+function findPhrase(input){
+  const v = norm(input);
+  if(v==="") return -1;
+  for(let p=0;p<N;p++){
+    if(CONFIG.phrases[p].answers.some(a=>norm(a)===v)) return p;
+  }
+  return -1;
+}
+
+const rows = document.getElementById("rows");
+const dotsEl = document.getElementById("dots");
+const countEl = document.getElementById("count");
+const finalEl = document.getElementById("final");
+const codeEl = document.getElementById("code");
+
+function build(){
+  rows.innerHTML = ""; dotsEl.innerHTML = ""; solvedSet.clear();
+  for(let i=0;i<N;i++){
+    const fx = document.createElement("div");
+    fx.className = "fx";
+    fx.innerHTML =
+      '<div class="fxpip" aria-hidden="true">○</div>'+
+      '<textarea rows="2" autocapitalize="off" autocorrect="off" autocomplete="off" '+
+        'spellcheck="false" placeholder="Escribe una frase…" aria-label="Casilla de frase"></textarea>'+
+      '<button class="btn">Comprobar</button>'+
+      '<div class="stat">—</div>'+
+      '<div class="trans" hidden></div>';
+    rows.appendChild(fx);
+
+    const ta = fx.querySelector("textarea");
+    const btn = fx.querySelector(".btn");
+    const stat = fx.querySelector(".stat");
+    const pip = fx.querySelector(".fxpip");
+    const trans = fx.querySelector(".trans");
+    let locked = false;
+
+    const check = ()=>{
+      if(locked) return;
+      const p = findPhrase(ta.value);
+      if(p === -1){
+        if(ta.value.trim()==="") return;
+        fx.classList.remove("miss"); void fx.offsetWidth; fx.classList.add("miss");
+        stat.className="stat"; stat.textContent="NO · revisa mayúsculas y puntuación";
+        ta.select();
+      } else if(solvedSet.has(p)){
+        fx.classList.remove("miss");
+        stat.className="stat warn"; stat.textContent="Esa frase ya está registrada · intenta con otra";
+      } else {
+        solvedSet.add(p); locked = true;
+        fx.classList.remove("miss"); fx.classList.add("ok","pop");
+        setTimeout(()=>fx.classList.remove("pop"),300);
+        pip.textContent="✓"; btn.textContent="GOL ✓"; ta.readOnly=true;
+        stat.className="stat"; stat.textContent="GOL ✓ · cambien de roles";
+        if(CONFIG.showTranslation){ trans.textContent = CONFIG.phrases[p].es; trans.hidden=false; }
+        update();
+      }
+    };
+    btn.addEventListener("click", check);
+    ta.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); check(); } });
+    ta.addEventListener("input", ()=>{ if(fx.classList.contains("miss")||stat.classList.contains("warn")){ fx.classList.remove("miss"); stat.className="stat"; stat.textContent="—"; } });
+
+    const dot = document.createElement("div"); dot.className="dot"; dotsEl.appendChild(dot);
+  }
+  finalEl.hidden = true; finalEl.classList.remove("show");
+  update();
+}
+
+function update(){
+  const done = solvedSet.size;
+  [...dotsEl.children].forEach((d,i)=> d.classList.toggle("on", i < done));
+  countEl.textContent = done + " / " + N + " GOLES";
+  if(done===N){
+    codeEl.textContent = CONFIG.code;
+    finalEl.hidden = false;
+    requestAnimationFrame(()=> finalEl.classList.add("show"));
+    finalEl.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+}
+
+document.getElementById("reset").addEventListener("click", build);
+build();
+</script>
+</body>
+</html>

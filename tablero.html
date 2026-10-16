@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tablero del equipo · IBAMEX 2026</title>
+<style>
+:root{--navy:#002b55;--blue:#004b8d;--cyan:#1ab7ea;--sky:#b5daff;--mist:#eaf7fd;--ink:#13263a;--ok:#1d8a4e;--bad:#c8372d;--sun:#ffd25e;--line:#d3e0ea}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Open Sans",Arial,Helvetica,sans-serif;background:#f4f8fb;color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%}
+header.top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+header.top b{font-size:16px}
+header.top button{margin-left:auto;background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;border-radius:20px;padding:4px 12px;font:inherit;font-size:13px}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 70px}
+h1{font-size:24px;color:var(--navy);margin:6px 0}
+h2{font-size:20px;color:var(--navy);margin:0 0 4px}
+.tag{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--cyan)}
+.small{font-size:13px;color:#4e5f6d}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.08);padding:16px;margin:14px 0;border-top:5px solid var(--cyan)}
+.card.sent{border-top-color:var(--ok)}
+.ctx{background:var(--mist);border-left:4px solid var(--cyan);border-radius:8px;padding:10px 12px;font-size:15px;margin:8px 0}
+.f{margin:14px 0}
+.f label{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+.f label .opc{font-weight:800;font-size:11px;letter-spacing:.1em;color:#7a8a99;background:#eef2f5;border-radius:6px;padding:2px 6px;margin-left:6px}
+textarea,input[type=text],select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--sky);border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:76px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--sky);background:#fff;border-radius:20px;padding:7px 12px;font:inherit;font-size:14px;color:var(--ink)}
+.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:15px}
+.chk input{width:22px;height:22px;flex:none;margin-top:1px}
+.nb{border:1.5px solid var(--line);border-left:6px solid #e6534a;border-radius:8px;padding:10px 12px;margin:8px 0;background:#fffdf7}
+.nb b{color:var(--navy)}
+.nb p{margin:4px 0 8px;font-style:italic}
+.btn{display:block;width:100%;background:var(--blue);color:#fff;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;font-size:17px;margin-top:12px}
+.btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.btn:disabled{opacity:.6}
+.status{margin-top:8px;font-weight:700;font-size:15px;min-height:20px}
+.status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
+.tabs{display:flex;gap:8px;margin:10px 0}
+.tabs button{flex:1;border:2px solid var(--blue);background:#fff;color:var(--blue);border-radius:10px;padding:10px;font:inherit;font-weight:800;font-size:16px}
+.tabs button.on{background:var(--blue);color:#fff}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.teams button{border:0;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.1);padding:20px 10px;font:inherit;font-size:18px;font-weight:800;color:var(--navy)}
+.teams button span{display:block;font-size:34px}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.nav a{font-size:13px;font-weight:700;color:var(--blue);background:#fff;border:1.5px solid var(--sky);border-radius:20px;padding:4px 10px;text-decoration:none}
+.nav a.done{border-color:var(--ok);color:var(--ok)}
+.pres{position:fixed;inset:0;background:var(--navy);color:#fff;z-index:20;overflow:auto;padding:24px 20px 80px}
+.pres h2{color:var(--sun);font-size:15px;letter-spacing:.12em;margin:22px 0 6px}
+.pres p{font-size:22px;line-height:1.35;margin:4px 0}
+.pres .x{position:fixed;top:12px;right:12px;background:#fff;color:var(--navy);border:0;border-radius:20px;padding:8px 14px;font:inherit;font-weight:800}
+.hide{display:none}
+@media print{header.top,.tabs,.nav,.btn,.status,.noprint{display:none!important}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}body{background:#fff}.card:not(.printme){display:none}}
+</style></head><body>
+<header class="top"><b>Tablero del equipo</b><button id="teamBtn" class="hide" onclick="changeTeam()"></button></header>
+<div class="wrap" id="app"></div>
+<script>
+var ENDPOINT='https://script.google.com/macros/s/AKfycbxrvayLnnOkrMoeIiXNThhfiYpgCzGPDs9PYTqlQFpnNuiXsSeVaKkJo4fNfmPNMZRs/exec';
+var TEAMS=[['Brújula','🧭'],['Bombilla','💡'],['Lupa','🔍'],['Llave','🔑']];
+var KEY='ibamex26-tablero';
+function ld(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+function sv(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var S=ld(); S.a=S.a||{}; S.sent=S.sent||{};
+if(/[?&]t=prueba/i.test(location.search)) S.team='Prueba';
+
+var CONCEPTS=['Forma','Función','Causa','Cambio','Conexión','Perspectiva','Responsabilidad'];
+var THEMES=['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo nos organizamos','Cómo compartimos el planeta'];
+var PROFILE=['Indagadores','Informados e instruidos','Pensadores','Buenos comunicadores','Íntegros','De mentalidad abierta','Solidarios','Audaces','Equilibrados','Reflexivos'];
+
+// field types: t=text area, s=select, c=chips(multi), k=checklist, n=notebook display
+var SECTIONS={
+d2:[
+ {id:'acceso',tag:'DÍA 2 · ACCESO',title:'Una barrera menos',
+  ctx:'La Unidad del Año evalúa con una prueba de 20 preguntas escritas, el último día, en silencio y con tiempo límite.',
+  f:[{k:'a1',t:'c',q:'En la Prueba relámpago, ¿qué les cerró la puerta?',o:['La lengua (inglés)','El tiempo','Leer una sola vez','Responder por escrito','Explicar sin preparar']},
+     {k:'a2',t:'t',q:'Antes: ¿qué barrera tiene la prueba de la Unidad del Año?'},
+     {k:'a3',t:'t',q:'Ahora: ¿qué cambian para que más estudiantes muestren lo que saben?'},
+     {k:'a4',t:'t',q:'¿Qué reto se mantiene igual?'},
+     {k:'a5',t:'t',q:'¿A qué estudiante real de su clase ayudaría este cambio?',opc:1}]},
+ {id:'significado',tag:'DÍA 2 · SIGNIFICADO',title:'Una idea que viaja',
+  ctx:'Idea central de la Unidad del Año: «Los recursos naturales son importantes».',
+  f:[{k:'b1',t:'s',q:'En la aduana, ¿en qué columna cayó la idea central de la Unidad del Año?',o:['Tema','Dato','Frase de póster','Idea que viaja']},
+     {k:'b2',t:'t',q:'Nuestra nueva idea central para la Unidad del Año'},
+     {k:'b3',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Dice una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']},
+     {k:'b4',t:'t',q:'¿Dónde más es verdad? Dos lugares o épocas',opc:1},
+     {k:'b5',t:'c',q:'¿Qué conceptos mueven su idea? Elijan dos',o:CONCEPTS,opc:1}]},
+ {id:'evidencia',tag:'DÍA 2 · EVIDENCIA',title:'Tres cuadernos',
+  ctx:'A mitad de la Unidad del Año, la docente pregunta: «¿Por qué importan las decisiones que tomamos sobre los recursos naturales?»',
+  f:[{t:'n',who:'Ana',txt:'Hay recursos renovables y no renovables. Renovables: el agua, el sol y el viento. No renovables: el petróleo, el carbón y el gas.'},
+     {k:'c1',t:'s',q:'Ana…',o:['Recuerda datos','Repite el póster','Comprende']},
+     {t:'n',who:'Bruno',txt:'Si una fábrica usa mucha agua del río, el río se seca. Sin agua se mueren los peces y los pescadores del pueblo se quedan sin trabajo. Por eso una decisión cambia a muchos.'},
+     {k:'c2',t:'s',q:'Bruno…',o:['Recuerda datos','Repite el póster','Comprende']},
+     {t:'n',who:'Camila',txt:'Porque tenemos que cuidar el planeta y no desperdiciar. Es muy importante cuidar la naturaleza.'},
+     {k:'c3',t:'s',q:'Camila…',o:['Recuerda datos','Repite el póster','Comprende']},
+     {k:'c4',t:'t',q:'Elijan a un estudiante. Si observamos que…'},
+     {k:'c5',t:'t',q:'…entonces mañana…'},
+     {k:'c6',t:'t',q:'Su alumno real: ¿se parece a Ana, a Bruno o a Camila? ¿Qué haría mañana?',opc:1}]}
+],
+d3:[
+ {id:'nucleo',tag:'DÍA 3 · SU UNIDAD',title:'El núcleo de su unidad',
+  ctx:'Trabajen sobre una unidad real que alguien del equipo vaya a enseñar.',
+  f:[{k:'e1',t:'x',q:'Unidad y grado'},
+     {k:'e2',t:'s',q:'Tema transdisciplinario',o:THEMES},
+     {k:'e3',t:'t',q:'Idea central: una relación que puede viajar (no un tema)'},
+     {k:'e4',t:'c',q:'Conceptos especificados: dos o tres',o:CONCEPTS},
+     {k:'e5',t:'t',q:'Línea de indagación 1 (una frase, no una pregunta)'},
+     {k:'e6',t:'t',q:'Línea de indagación 2'},
+     {k:'e7',t:'t',q:'Línea de indagación 3'},
+     {k:'e8',t:'s',q:'Tipo de indagación principal',o:['Estructurada','Guiada','Abierta']},
+     {k:'e9',t:'c',q:'Atributos del perfil que desarrollará',o:PROFILE,opc:1}]},
+ {id:'pruebas',tag:'DÍA 3 · DOS PRUEBAS',title:'Agencia y evidencia',
+  f:[{k:'g1',t:'t',q:'Agencia: ¿qué decide de verdad el alumnado?'},
+     {k:'g2',t:'t',q:'Evidencia: «Si observamos que…, entonces…»'},
+     {k:'g3',t:'t',q:'Acceso: ¿qué barrera quitan desde el diseño?',opc:1}]},
+ {id:'compromiso',tag:'DÍA 3 · COMPROMISO',title:'Una cosa importante',
+  f:[{k:'h1',t:'t',q:'La pregunta que trajeron de la audiencia'},
+     {k:'h2',t:'t',q:'Lo que cambiaron en su unidad'},
+     {k:'h3',t:'t',q:'Compromiso de 30 días: quién, qué y cuándo'}]}
+]};
+
+function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstChild}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function teamIcon(){var t=TEAMS.filter(function(x){return x[0]==S.team})[0];return t?t[1]:'🧪'}
+
+function render(){
+ var app=document.getElementById('app'),tb=document.getElementById('teamBtn');
+ if(!S.team){tb.classList.add('hide');
+  app.innerHTML='<h1>¿Qué equipo son?</h1><p>Elijan una sola vez. Un celular por equipo.</p><div class="teams">'+TEAMS.map(function(t){return '<button onclick="pick(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[0]+'</button>'}).join('')+'</div>';return}
+ tb.classList.remove('hide');tb.textContent=teamIcon()+' '+S.team+' · cambiar';
+ var day=S.day||(location.hash.indexOf('d3')>-1?'d3':'d2');
+ if(location.hash.match(/^#d[23]/))day=location.hash.slice(1,3);
+ S.day=day;
+ var h='<div class="tabs"><button class="'+(day=='d2'?'on':'')+'" onclick="setDay(\'d2\')">Día 2</button><button class="'+(day=='d3'?'on':'')+'" onclick="setDay(\'d3\')">Día 3</button></div>';
+ h+='<div class="nav">'+SECTIONS[day].map(function(s){return '<a href="javascript:go(\''+s.id+'\')" class="'+(S.sent[s.id]?'done':'')+'">'+(S.sent[s.id]?'✓ ':'')+s.title+'</a>'}).join('')+'</div>';
+ SECTIONS[day].forEach(function(s){h+=card(s)});
+ h+='<button class="btn ghost" onclick="present()">Modo presentación</button><p class="small">Sus respuestas se guardan en este celular. Si cambian de celular, empiezan de cero.</p>';
+ app.innerHTML=h;
+}
+function card(s){
+ var h='<div class="card'+(S.sent[s.id]?' sent':'')+'" id="c_'+s.id+'"><div class="tag">'+s.tag+'</div><h2>'+s.title+'</h2>';
+ if(s.ctx)h+='<div class="ctx">'+s.ctx+'</div>';
+ s.f.forEach(function(f){h+=field(f)});
+ h+='<button class="btn" onclick="send(\''+s.id+'\',this)">📤 Enviar evidencia</button><div class="status" id="st_'+s.id+'">'+(S.sent[s.id]?'✓ Enviada '+S.sent[s.id]+'. Pueden enviarla otra vez si la mejoran.':'')+'</div></div>';
+ return h;
+}
+function field(f){
+ if(f.t=='n')return '<div class="nb"><b>'+f.who+'</b><p>«'+f.txt+'»</p></div>';
+ var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>';
+ if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value)">'+esc(v)+'</textarea></div>';
+ if(f.t=='x')return '<div class="f">'+lab+'<input type="text" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value)"></div>';
+ if(f.t=='s')return '<div class="f">'+lab+'<select onchange="setv(\''+f.k+'\',this.value)"><option value="">Elijan…</option>'+f.o.map(function(o){return '<option'+(v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select></div>';
+ if(f.t=='c'){var a=v||[];return '<div class="f">'+lab+'<div class="chips">'+f.o.map(function(o,i){return '<button class="chip'+(a.indexOf(o)>-1?' sel':'')+'" onclick="tog(\''+f.k+'\','+i+',this)">'+o+'</button>'}).join('')+'</div></div>'}
+ if(f.t=='k'){var b=v||[];return '<div class="f">'+lab+f.o.map(function(o,i){return '<label class="chk"><input type="checkbox"'+(b.indexOf(o)>-1?' checked':'')+' onchange="tog(\''+f.k+'\','+i+')"> '+o+'</label>'}).join('')+'</div>'}
+ return '';
+}
+function find(k){var r;['d2','d3'].forEach(function(d){SECTIONS[d].forEach(function(s){s.f.forEach(function(f){if(f.k==k)r=f})})});return r}
+function setv(k,v){S.a[k]=v;sv()}
+function tog(k,i,btn){var f=find(k),o=f.o[i],a=S.a[k]||[];var j=a.indexOf(o);if(j>-1)a.splice(j,1);else a.push(o);S.a[k]=a;sv();if(btn)btn.classList.toggle('sel')}
+function pick(t){S.team=t;sv();render();window.scrollTo(0,0)}
+function changeTeam(){if(confirm('¿Cambiar de equipo? Las respuestas guardadas se quedan en este celular.')){S.team='';sv();render()}}
+function setDay(d){S.day=d;sv();history.replaceState(null,'','#'+d);render();window.scrollTo(0,0)}
+function go(id){var c=document.getElementById('c_'+id);if(c)c.scrollIntoView({behavior:'smooth'})}
+function val(f){var v=S.a[f.k];if(Array.isArray(v))return v.join(', ');return v||''}
+function items(s){var it=[];if(s.ctx)it.push({q:'Contexto',a:s.ctx.replace(/<[^>]+>/g,'')});
+ s.f.forEach(function(f){if(f.t=='n')it.push({q:f.who+' escribió',a:'«'+f.txt+'»'});else it.push({q:f.q,a:val(f)||'—'})});return it}
+function secById(id){var r;['d2','d3'].forEach(function(d){SECTIONS[d].forEach(function(s){if(s.id==id)r=s})});return r}
+function send(id,btn){
+ var s=secById(id),st=document.getElementById('st_'+id);
+ var empty=s.f.filter(function(f){return f.k&&!f.opc&&!val(f)});
+ if(empty.length&&!confirm('Faltan '+empty.length+' respuesta(s). ¿Enviar de todos modos?'))return;
+ btn.disabled=true;st.className='status';st.textContent='Enviando…';
+ var body=JSON.stringify({team:S.team,title:s.tag+' · '+s.title,items:items(s)});
+ var done=false,timer=setTimeout(function(){if(!done){done=true;fail()}},25000);
+ function ok(){var t=new Date();S.sent[id]=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);sv();btn.disabled=false;st.className='status ok';st.textContent='✓ Evidencia enviada a la carpeta del equipo '+S.team+'.';document.getElementById('c_'+id).classList.add('sent');var a=document.querySelector('.nav a[href*="'+id+'"]');if(a){a.classList.add('done');if(a.textContent.indexOf('✓')<0)a.textContent='✓ '+a.textContent}}
+ function fail(){btn.disabled=false;st.className='status bad';st.innerHTML='No se pudo enviar. Revisen el wifi y toquen otra vez. <a href="javascript:printSec(\''+id+'\')">Descargar copia en PDF</a>'}
+ fetch(ENDPOINT,{method:'POST',body:body}).then(function(r){return r.json()}).then(function(j){if(done)return;done=true;clearTimeout(timer);if(j&&j.ok)ok();else fail()}).catch(function(){if(done)return;done=true;clearTimeout(timer);fail()});
+}
+function printSec(id){document.querySelectorAll('.card').forEach(function(c){c.classList.toggle('printme',c.id=='c_'+id)});window.print()}
+function present(){
+ var d=S.day||'d2',h='<div class="pres"><button class="x" onclick="this.parentNode.remove()">Cerrar</button><div class="tag" style="color:#1ab7ea">'+teamIcon()+' EQUIPO '+esc(S.team).toUpperCase()+'</div>';
+ var picks=d=='d2'?[['ACCESO · ANTES','a2'],['ACCESO · AHORA','a3'],['IDEA CENTRAL NUEVA','b2'],['DÓNDE MÁS ES VERDAD','b4'],['SI OBSERVAMOS QUE…','c4'],['…ENTONCES MAÑANA','c5']]
+  :[['UNIDAD','e1'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS','e4'],['LÍNEAS DE INDAGACIÓN','e5'],['','e6'],['','e7'],['AGENCIA','g1'],['EVIDENCIA','g2']];
+ picks.forEach(function(p){var f=find(p[1]),v=f?val(f):'';if(!v)return;h+=(p[0]?'<h2>'+p[0]+'</h2>':'')+'<p>'+esc(v)+'</p>'});
+ document.body.appendChild(el(h+'</div>'));
+}
+render();
+</script>
+</body></html>

@@ -2,184 +2,564 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tablero del equipo · IBAMEX 2026</title>
 <style>
-:root{--navy:#002b55;--blue:#004b8d;--cyan:#1ab7ea;--sky:#b5daff;--mist:#eaf7fd;--ink:#13263a;--ok:#1d8a4e;--bad:#c8372d;--sun:#ffd25e;--line:#d3e0ea}
+:root{--navy:#002b55;--blue:#004b8d;--cyan:#1ab7ea;--sky:#b5daff;--mist:#eaf7fd;--ink:#13263a;--ok:#1d8a4e;--okbg:#e5f5ec;--bad:#c8372d;--badbg:#fdecea;--sun:#ffd25e;--line:#d3e0ea;--grey:#7a8a99}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Open Sans",Arial,Helvetica,sans-serif;background:#f4f8fb;color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%}
 header.top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
 header.top b{font-size:16px}
 header.top button{margin-left:auto;background:transparent;border:1.5px solid rgba(255,255,255,.5);color:#fff;border-radius:20px;padding:4px 12px;font:inherit;font-size:13px}
-.wrap{max-width:760px;margin:0 auto;padding:14px 14px 70px}
+.wrap{max-width:760px;margin:0 auto;padding:12px 14px 70px}
 h1{font-size:24px;color:var(--navy);margin:6px 0}
-h2{font-size:20px;color:var(--navy);margin:0 0 4px}
+h2{font-size:21px;color:var(--navy);margin:2px 0 6px}
+h3{font-size:17px;color:var(--navy);margin:14px 0 6px}
+p{margin:6px 0}
 .tag{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--cyan)}
 .small{font-size:13px;color:#4e5f6d}
-.card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.08);padding:16px;margin:14px 0;border-top:5px solid var(--cyan)}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.08);padding:16px;margin:12px 0;border-top:5px solid var(--cyan)}
 .card.sent{border-top-color:var(--ok)}
-.ctx{background:var(--mist);border-left:4px solid var(--cyan);border-radius:8px;padding:10px 12px;font-size:15px;margin:8px 0}
+.ctx{background:var(--mist);border-left:4px solid var(--cyan);border-radius:8px;padding:10px 12px;font-size:15px;margin:10px 0}
+.goal{background:#fff8e1;border:2px solid var(--sun);border-radius:10px;padding:10px 12px;font-size:15px;margin:10px 0}
+.tabs{display:flex;gap:6px;margin:8px 0}
+.tabs button{flex:1;border:2px solid var(--blue);background:#fff;color:var(--blue);border-radius:10px;padding:9px 4px;font:inherit;font-weight:800;font-size:15px}
+.tabs button.on{background:var(--blue);color:#fff}
+.nav{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.nav button{font:inherit;font-size:13px;font-weight:700;color:var(--blue);background:#fff;border:1.5px solid var(--sky);border-radius:20px;padding:5px 11px}
+.nav button.cur{background:var(--mist);border-color:var(--blue)}
+.nav button.done{border-color:var(--ok);color:var(--ok)}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.teams button{border:0;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.1);padding:20px 10px;font:inherit;font-size:18px;font-weight:800;color:var(--navy)}
+.teams button span{display:block;font-size:34px}
+/* stepper */
+.prog{display:flex;gap:4px;margin:8px 0 4px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.prog i.on{background:var(--cyan)}.prog i.past{background:var(--blue)}
+.phase{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;border-radius:6px;padding:3px 8px;margin:6px 0 2px;color:#fff}
+.ph-Aprende{background:#004b8d}.ph-Pruébalo{background:#d9822b}.ph-Reto{background:#8e44ad}.ph-Llévatelo{background:#1d8a4e}.ph-Construyan{background:#d9822b}.ph-Revisen{background:#1d8a4e}
+.stepnav{display:flex;gap:8px;margin-top:16px}
+.stepnav button{flex:1;border-radius:12px;padding:13px;font:inherit;font-weight:800;font-size:16px;border:2px solid var(--blue)}
+.stepnav .back{background:#fff;color:var(--blue);flex:0 0 32%}
+.stepnav .next{background:var(--blue);color:#fff}
+/* tap reveal */
+.tap{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--sky);border-radius:10px;padding:11px 12px;font:inherit;font-size:15px;font-weight:700;color:var(--blue);margin:8px 0 0}
+.tap:after{content:" ▸ toquen";font-weight:600;font-size:12px;color:var(--grey)}
+.tap.open{border-color:var(--blue);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.tap.open:after{content:""}
+.rev{border:2px solid var(--blue);border-top:0;border-radius:0 0 10px 10px;padding:10px 12px;font-size:15px;background:var(--mist);animation:pop .25s ease}
+@keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* choice / reto */
+.item{border:1.5px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;background:#fff}
+.item .meta{font-size:13px;color:#4e5f6d}
+.item .txt{font-size:16px;font-weight:700;margin:4px 0 8px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:2px solid var(--sky);background:#fff;border-radius:20px;padding:8px 12px;font:inherit;font-size:14px;font-weight:700;color:var(--ink)}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:var(--badbg);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{margin-top:8px;font-size:14px;border-radius:8px;padding:8px 10px;animation:pop .25s ease}
+.fb.ok{background:var(--okbg);color:#145c35}.fb.no{background:var(--badbg);color:#8e2a22}
+.score{font-weight:800;font-size:16px;color:var(--navy);margin-top:10px}
+/* simulator */
+.sw{margin:10px 0}
+.sw .lb{font-weight:800;font-size:14px;margin-bottom:4px}
+.seg{display:flex;border:2px solid var(--blue);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:#fff;color:var(--blue);font:inherit;font-size:13.5px;font-weight:700;padding:9px 6px}
+.seg button.on{background:var(--blue);color:#fff}
+.seg.trap button.on.b1{background:var(--bad)}
+.studs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.stud{border-radius:12px;padding:10px;border:2px solid var(--bad);background:var(--badbg);transition:all .3s}
+.stud b{display:block;font-size:15px}
+.stud .d{font-size:12.5px;margin:2px 0 6px}
+.stud .bar{height:8px;border-radius:4px;background:rgba(0,0,0,.08);overflow:hidden}
+.stud .bar i{display:block;height:100%;width:20%;background:var(--bad);transition:width .4s}
+.stud .st{font-size:12px;font-weight:800;margin-top:4px;color:var(--bad)}
+.stud.go{border-color:var(--ok);background:var(--okbg)}
+.stud.go .bar i{width:100%;background:var(--ok)}.stud.go .st{color:var(--ok)}
+.stud.low{border-color:var(--grey);background:#eef2f5}.stud.low .st{color:var(--grey)}.stud.low .bar i{width:100%;background:var(--grey)}
+.alert{border-radius:10px;padding:10px 12px;font-weight:700;font-size:15px;margin:8px 0;animation:pop .25s ease}
+.alert.bad{background:var(--badbg);color:#8e2a22;border:2px solid var(--bad)}
+.alert.good{background:var(--okbg);color:#145c35;border:2px solid var(--ok)}
+/* travel */
+.dest{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0}
+.dc{border-radius:12px;padding:10px 12px;border:2px solid var(--line);background:#fff;opacity:0;transform:translateX(-12px);transition:all .35s}
+.dc.in{opacity:1;transform:none}
+.dc b{font-size:14px}.dc p{font-size:14.5px;margin:3px 0 0}
+.dc.y{border-color:var(--ok);background:var(--okbg)}.dc.n{border-color:var(--grey);background:#f3f5f7}.dc.x{border-color:var(--bad);background:var(--badbg)}
+.lights{display:flex;gap:6px;margin:10px 0}
+.lights span{flex:1;text-align:center;font-size:12.5px;font-weight:800;border-radius:20px;padding:7px 4px;background:#eef2f5;color:var(--grey);border:2px solid #dde4ea;transition:all .3s}
+.lights span.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.sent-chip{display:inline-block;margin:3px 4px 0 0;font-size:12px;font-weight:700;background:var(--mist);color:var(--blue);border-radius:12px;padding:3px 8px}
+/* tiles */
+.build{min-height:58px;border:2px dashed var(--blue);border-radius:12px;padding:10px;font-size:17px;font-weight:700;background:var(--mist);margin:10px 0}
+.build .ph{color:var(--grey);font-weight:600;font-size:14px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px}
+.tile{border:0;border-radius:10px;padding:9px 11px;font:inherit;font-size:14.5px;font-weight:700;color:#fff;background:var(--blue)}
+.tile.v{background:#d9822b}.tile.o{background:#1d6f8a}.tile.j{background:#8e44ad}.tile.c{background:#555}
+.tile:disabled{opacity:.3}
+.minor{display:flex;gap:8px;margin-top:8px}
+.minor button{flex:1;background:#fff;border:1.5px solid var(--sky);border-radius:10px;padding:8px;font:inherit;font-size:13px;font-weight:700;color:var(--blue)}
+/* highlight */
+.hl{font-size:17px;line-height:1.9;border:1.5px solid var(--line);border-left:6px solid #e6534a;border-radius:8px;padding:10px 12px;background:#fffdf7}
+.hl span{cursor:pointer;border-radius:4px;padding:1px 2px}
+.hl span.sel{background:var(--sun)}
+.hl span.good{background:#bfe8cf;outline:2px solid var(--ok)}
+.hl span.miss{outline:2px dashed var(--ok)}
+.hl span.bad{background:var(--badbg);text-decoration:line-through}
+.nb{border:1.5px solid var(--line);border-left:6px solid #e6534a;border-radius:8px;padding:10px 12px;margin:8px 0;background:#fffdf7}
+.nb b{color:var(--navy)}.nb p{margin:4px 0 0;font-style:italic}
+/* dialogue */
+.chat{margin:10px 0}
+.bub{max-width:88%;border-radius:14px;padding:9px 12px;margin:6px 0;font-size:15px;animation:pop .25s ease}
+.bub.t{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.bub.s{background:#fff3d6;border-bottom-left-radius:4px}
+.bub.n{background:transparent;color:var(--grey);font-style:italic;padding:2px 4px}
+/* fields */
 .f{margin:14px 0}
 .f label{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
-.f label .opc{font-weight:800;font-size:11px;letter-spacing:.1em;color:#7a8a99;background:#eef2f5;border-radius:6px;padding:2px 6px;margin-left:6px}
+.opc{font-weight:800;font-size:11px;letter-spacing:.1em;color:var(--grey);background:#eef2f5;border-radius:6px;padding:2px 6px;margin-left:6px}
 textarea,input[type=text],select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:2px solid var(--sky);border-radius:10px;background:#fff;color:var(--ink)}
-textarea{min-height:76px;resize:vertical}
+textarea{min-height:70px;resize:vertical}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1.5px solid var(--sky);background:#fff;border-radius:20px;padding:7px 12px;font:inherit;font-size:14px;color:var(--ink)}
-.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}
-.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:15px}
+.chip{border:1.5px solid var(--sky);background:#fff;border-radius:20px;padding:7px 12px;font:inherit;font-size:14px;color:var(--ink);text-align:left}
+.chip small{display:block;font-size:11.5px;color:var(--grey)}
+.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}.chip.sel small{color:#d7e8f7}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:15px;font-weight:600}
 .chk input{width:22px;height:22px;flex:none;margin-top:1px}
-.nb{border:1.5px solid var(--line);border-left:6px solid #e6534a;border-radius:8px;padding:10px 12px;margin:8px 0;background:#fffdf7}
-.nb b{color:var(--navy)}
-.nb p{margin:4px 0 8px;font-style:italic}
+.ej{background:#f7f1ff;border-left:4px solid #8e44ad;border-radius:8px;padding:9px 12px;font-size:14.5px;margin:6px 0}
+.take{background:linear-gradient(135deg,#002b55,#004b8d);color:#fff;border-radius:14px;padding:16px;margin:10px 0}
+.take h3{color:var(--sun);margin:0 0 8px}
+.take ol{margin:0;padding-left:20px}.take li{margin:5px 0;font-size:15.5px}
 .btn{display:block;width:100%;background:var(--blue);color:#fff;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;font-size:17px;margin-top:12px}
 .btn.ghost{background:#fff;color:var(--blue);border:2px solid var(--blue)}
 .btn:disabled{opacity:.6}
 .status{margin-top:8px;font-weight:700;font-size:15px;min-height:20px}
 .status.ok{color:var(--ok)}.status.bad{color:var(--bad)}
-.tabs{display:flex;gap:8px;margin:10px 0}
-.tabs button{flex:1;border:2px solid var(--blue);background:#fff;color:var(--blue);border-radius:10px;padding:10px;font:inherit;font-weight:800;font-size:16px}
-.tabs button.on{background:var(--blue);color:#fff}
-.teams{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.teams button{border:0;background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,43,85,.1);padding:20px 10px;font:inherit;font-size:18px;font-weight:800;color:var(--navy)}
-.teams button span{display:block;font-size:34px}
-.nav{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
-.nav a{font-size:13px;font-weight:700;color:var(--blue);background:#fff;border:1.5px solid var(--sky);border-radius:20px;padding:4px 10px;text-decoration:none}
-.nav a.done{border-color:var(--ok);color:var(--ok)}
 .pres{position:fixed;inset:0;background:var(--navy);color:#fff;z-index:20;overflow:auto;padding:24px 20px 80px}
 .pres h2{color:var(--sun);font-size:15px;letter-spacing:.12em;margin:22px 0 6px}
 .pres p{font-size:22px;line-height:1.35;margin:4px 0}
 .pres .x{position:fixed;top:12px;right:12px;background:#fff;color:var(--navy);border:0;border-radius:20px;padding:8px 14px;font:inherit;font-weight:800}
 .hide{display:none}
-@media print{header.top,.tabs,.nav,.btn,.status,.noprint{display:none!important}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}body{background:#fff}.card:not(.printme){display:none}}
+@media print{header.top,.tabs,.nav,.btn,.status,.stepnav,.noprint{display:none!important}.card{box-shadow:none;border:1px solid #ccc}body{background:#fff}}
 </style></head><body>
 <header class="top"><b>Tablero del equipo</b><button id="teamBtn" class="hide" onclick="changeTeam()"></button></header>
 <div class="wrap" id="app"></div>
 <script>
 var ENDPOINT='https://script.google.com/macros/s/AKfycbxrvayLnnOkrMoeIiXNThhfiYpgCzGPDs9PYTqlQFpnNuiXsSeVaKkJo4fNfmPNMZRs/exec';
 var TEAMS=[['Brújula','🧭'],['Bombilla','💡'],['Lupa','🔍'],['Llave','🔑']];
-var KEY='ibamex26-tablero';
+var KEY='ibamex26-tablero2';
 function ld(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
 function sv(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-var S=ld(); S.a=S.a||{}; S.sent=S.sent||{};
+var S=ld();['a','sent','st','r','x'].forEach(function(k){S[k]=S[k]||{}});
 if(/[?&]t=prueba/i.test(location.search)) S.team='Prueba';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function X(id){S.x[id]=S.x[id]||{};return S.x[id]}
 
-var CONCEPTS=['Forma','Función','Causa','Cambio','Conexión','Perspectiva','Responsabilidad'];
+var CONCEPTS=[['Forma','¿Cómo es?'],['Función','¿Cómo funciona?'],['Causa','¿Por qué es así?'],['Cambio','¿Cómo cambia?'],['Conexión','¿Cómo se conecta con otras cosas?'],['Perspectiva','¿Cuáles son los puntos de vista?'],['Responsabilidad','¿Cuál es nuestra responsabilidad?']];
 var THEMES=['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo nos organizamos','Cómo compartimos el planeta'];
 var PROFILE=['Indagadores','Informados e instruidos','Pensadores','Buenos comunicadores','Íntegros','De mentalidad abierta','Solidarios','Audaces','Equilibrados','Reflexivos'];
 
-// field types: t=text area, s=select, c=chips(multi), k=checklist, n=notebook display
-var SECTIONS={
-d2:[
- {id:'acceso',tag:'DÍA 2 · ACCESO',title:'Una barrera menos',
-  ctx:'La Unidad del Año evalúa con una prueba de 20 preguntas escritas, el último día, en silencio y con tiempo límite.',
-  f:[{k:'a1',t:'c',q:'En la Prueba relámpago, ¿qué les cerró la puerta?',o:['La lengua (inglés)','El tiempo','Leer una sola vez','Responder por escrito','Explicar sin preparar']},
-     {k:'a2',t:'t',q:'Antes: ¿qué barrera tiene la prueba de la Unidad del Año?'},
-     {k:'a3',t:'t',q:'Ahora: ¿qué cambian para que más estudiantes muestren lo que saben?'},
-     {k:'a4',t:'t',q:'¿Qué reto se mantiene igual?'},
-     {k:'a5',t:'t',q:'¿A qué estudiante real de su clase ayudaría este cambio?',opc:1}]},
- {id:'significado',tag:'DÍA 2 · SIGNIFICADO',title:'Una idea que viaja',
-  ctx:'Idea central de la Unidad del Año: «Los recursos naturales son importantes».',
-  f:[{k:'b1',t:'s',q:'En la aduana, ¿en qué columna cayó la idea central de la Unidad del Año?',o:['Tema','Dato','Frase de póster','Idea que viaja']},
-     {k:'b2',t:'t',q:'Nuestra nueva idea central para la Unidad del Año'},
-     {k:'b3',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Dice una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']},
-     {k:'b4',t:'t',q:'¿Dónde más es verdad? Dos lugares o épocas',opc:1},
-     {k:'b5',t:'c',q:'¿Qué conceptos mueven su idea? Elijan dos',o:CONCEPTS,opc:1}]},
- {id:'evidencia',tag:'DÍA 2 · EVIDENCIA',title:'Tres cuadernos',
-  ctx:'A mitad de la Unidad del Año, la docente pregunta: «¿Por qué importan las decisiones que tomamos sobre los recursos naturales?»',
-  f:[{t:'n',who:'Ana',txt:'Hay recursos renovables y no renovables. Renovables: el agua, el sol y el viento. No renovables: el petróleo, el carbón y el gas.'},
-     {k:'c1',t:'s',q:'Ana…',o:['Recuerda datos','Repite el póster','Comprende']},
-     {t:'n',who:'Bruno',txt:'Si una fábrica usa mucha agua del río, el río se seca. Sin agua se mueren los peces y los pescadores del pueblo se quedan sin trabajo. Por eso una decisión cambia a muchos.'},
-     {k:'c2',t:'s',q:'Bruno…',o:['Recuerda datos','Repite el póster','Comprende']},
-     {t:'n',who:'Camila',txt:'Porque tenemos que cuidar el planeta y no desperdiciar. Es muy importante cuidar la naturaleza.'},
-     {k:'c3',t:'s',q:'Camila…',o:['Recuerda datos','Repite el póster','Comprende']},
-     {k:'c4',t:'t',q:'Elijan a un estudiante. Si observamos que…'},
-     {k:'c5',t:'t',q:'…entonces mañana…'},
-     {k:'c6',t:'t',q:'Su alumno real: ¿se parece a Ana, a Bruno o a Camila? ¿Qué haría mañana?',opc:1}]}
-],
+/* ======================= DÍA 2 ======================= */
+var TAKE={
+ acceso:{h:'Acceso en tres pasos',li:['Fijen la meta: ¿qué queremos ver?','Busquen lo que estorba y no es la meta: idioma, tiempo, formato, momento.','Cambien el camino, nunca el destino. Bajar la meta no es acceso.']},
+ significado:{h:'Una idea central…',li:['Dice una relación entre conceptos. No es solo un tema.','Viaja: es verdad en otros lugares y en otras épocas.','Se puede indagar por varios caminos durante semanas.','No es un dato ni un consejo de póster.']},
+ evidencia:{h:'Evidencia en cuatro ideas',li:['Es lo que el alumnado dice, hace o crea.','La comprensión se ve en las conexiones: si…, entonces…, por eso…','Una buena pregunta saca a la luz lo que comprenden.','Sirve para decidir: «Si observamos…, entonces mañana…».']}
+};
+
+var MODS={d2:[
+{id:'acceso',tag:'DÍA 2 · ACCESO',title:'Una barrera menos',steps:[
+ {ph:'Aprende',k:'learn',h:'La barrera estaba en el diseño',
+  body:'En la Prueba relámpago ustedes sabían de recursos naturales. Aun así, casi nadie pudo mostrarlo.',
+  taps:[['¿Qué midió la prueba en realidad?','Midió inglés académico, velocidad de lectura y valor para hablar en público sin preparar. No midió lo que saben de recursos naturales.'],
+        ['¿El problema era de ustedes?','No. La barrera estaba en cómo se diseñó la prueba. Así viven muchos alumnos las evaluaciones «iguales para todos».'],
+        ['¿Y la prueba de la Unidad del Año?','Es igual: 20 preguntas escritas, el último día, en silencio y con tiempo límite. Va a cerrar puertas a alumnos que sí saben.']]},
+ {ph:'Aprende',k:'choice',h:'Primero, fijen la meta',
+  body:'<div class="goal">🎯 <b>Meta de la Unidad del Año:</b> explicar por qué importan las decisiones sobre los recursos naturales.</div>Toquen una respuesta en cada línea. ¿Es parte de la meta?',
+  items:[{txt:'Leer inglés académico',o:['Es la meta','No es la meta'],ans:1,why:'Solo sería meta en una unidad de inglés. Aquí es un camino.'},
+         {txt:'Explicar causas y consecuencias',o:['Es la meta','No es la meta'],ans:0,why:'Eso es exactamente lo que queremos ver.'},
+         {txt:'Terminar en 20 minutos',o:['Es la meta','No es la meta'],ans:1,why:'La rapidez no es lo que queremos ver.'},
+         {txt:'Escribir sin ayuda',o:['Es la meta','No es la meta'],ans:1,why:'Escribir es un camino. La meta es explicar.'}]},
+ {ph:'Aprende',k:'learn',h:'Mismo destino, varios caminos',
+  body:'<div class="goal">🎯 <b>El destino</b> es igual para todos: la meta no se toca.<br>🛤️ <b>Los caminos</b> pueden ser varios: idioma, tiempo, formato, momento.</div>En el PEP, la inclusión significa quitar las barreras que impiden aprender y mostrar lo aprendido. No significa bajar la meta.',
+  taps:[['«¿Y no es injusto dar opciones?»','Injusto es medir algo distinto a la meta. Si la meta es explicar, cualquier camino que deje ver la explicación es justo.'],
+        ['«¿Entonces cada alumno hace algo distinto?»','No. Todos llegan a la misma meta. Lo que cambia es cómo llegan y cómo la muestran.']]},
+ {ph:'Pruébalo',k:'sim',h:'El simulador de la prueba'},
+ {ph:'Reto',k:'reto',h:'¿Quita una barrera o baja la meta?',body:'Lean la meta y el cambio. Decidan en equipo y toquen. Cuenta el primer intento.',
+  items:[{meta:'Meta: explicar el ciclo del agua.',txt:'Cambio: lo explica con un dibujo y lo cuenta en voz alta.',o:['Quita una barrera','Baja la meta'],ans:0,why:'La explicación sigue ahí. Solo cambió el camino.'},
+         {meta:'Meta: explicar por qué importan las decisiones sobre los recursos.',txt:'Cambio: solo tiene que nombrar tres recursos.',o:['Quita una barrera','Baja la meta'],ans:1,why:'Nombrar no es explicar. La meta bajó.'},
+         {meta:'Meta: escribir un texto persuasivo en inglés.',txt:'Cambio: puede escribirlo en español.',o:['Quita una barrera','Baja la meta'],ans:1,why:'Aquí el inglés sí es la meta. Una ayuda válida sería un banco de palabras o un texto modelo.'},
+         {meta:'Meta: comparar dos comunidades.',txt:'Cambio: entrega dos días después.',o:['Quita una barrera','Baja la meta'],ans:0,why:'Más tiempo no cambia lo que debe mostrar.'},
+         {meta:'Meta: resolver problemas con fracciones.',txt:'Cambio: la docente lee los problemas en voz alta.',o:['Quita una barrera','Baja la meta'],ans:0,why:'En matemáticas, leer no es la meta. Leer en voz alta quita la barrera.'},
+         {meta:'Meta: leer un cuento y comprenderlo.',txt:'Cambio: la docente le lee el cuento en voz alta.',o:['Quita una barrera','Baja la meta'],ans:1,why:'¡Trampa! Aquí leer sí es parte de la meta. Ayuda válida: más tiempo o un texto con apoyos visuales.'}]},
+ {ph:'Llévatelo',k:'take',h:'Su tarjeta para llevar',take:'acceso',q:'En una frase: ¿cuál es la diferencia entre quitar una barrera y bajar la meta?',key:'a_line',
+  q2:'Un alumno real de su clase al que le ayudaría esto',key2:'a_real'}
+]},
+{id:'significado',tag:'DÍA 2 · SIGNIFICADO',title:'Una idea que viaja',steps:[
+ {ph:'Aprende',k:'learn',h:'Cuatro tipos de frase',
+  body:'En la aduana clasificaron 12 tarjetas. Toquen cada tipo para ver por qué es así.',
+  taps:[['TEMA · «Los recursos naturales»','Nombra de qué se trata la unidad. No dice nada sobre el tema.'],
+        ['DATO · «El agua hierve a 100 °C»','Se comprueba en un minuto. Después no queda nada que indagar.'],
+        ['PÓSTER · «Los recursos naturales son importantes»','Suena bien, pero es una opinión o un consejo. Nadie la discute y nadie la indaga. Era la idea central de la Unidad del Año.'],
+        ['VIAJA · «Las decisiones sobre los recursos naturales cambian la vida de las comunidades»','Dice una relación entre dos cosas, vale en otros lugares y épocas, y se puede investigar por muchos caminos.']]},
+ {ph:'Pruébalo',k:'travel',h:'El viaje de una idea'},
+ {ph:'Aprende',k:'learn',h:'¿Qué hace viajar a una idea?',
+  body:'<div class="ctx">Las <b>decisiones sobre los recursos naturales</b> <u>cambian</u> la <b>vida de las comunidades</b>.</div>Dos conceptos en negrita. Un verbo que los une, subrayado. Sin lugares, fechas ni nombres propios.',
+  taps:[['¿Por qué importa el verbo?','El verbo dice la relación: cambian, dependen de, responden a, conectan. Sin ese verbo solo hay un tema o un adjetivo.'],
+        ['¿Por qué sin lugares ni fechas?','Un lugar o una fecha amarra la idea. El ejemplo concreto se estudia dentro de la unidad, no en la idea central.']]},
+ {ph:'Pruébalo',k:'tiles',h:'Taller de piezas'},
+ {ph:'Reto',k:'reto',h:'Pasen por la aduana',body:'Seis frases nuevas. ¿Tema, dato, póster o idea que viaja? Cuenta el primer intento.',
+  items:[{txt:'«Los mercados»',o:['Tema','Dato','Póster','Viaja'],ans:0,why:'Nombra el tema. No dice nada sobre él.'},
+         {txt:'«El tianguis de mi colonia se pone los martes»',o:['Tema','Dato','Póster','Viaja'],ans:1,why:'Se comprueba en un minuto y solo vale para un lugar.'},
+         {txt:'«Hay que comprar productos locales»',o:['Tema','Dato','Póster','Viaja'],ans:2,why:'Es un consejo. ¿Qué se indagaría durante seis semanas?'},
+         {txt:'«Los mercados conectan a quienes producen con quienes consumen»',o:['Tema','Dato','Póster','Viaja'],ans:3,why:'Una relación que vale en Tlatelolco en 1500 y en una tienda en línea hoy.'},
+         {txt:'«Los inventos son importantes para la humanidad»',o:['Tema','Dato','Póster','Viaja'],ans:2,why:'¡Trampa! Tiene dos conceptos, pero «son importantes» no dice cómo se relacionan.'},
+         {txt:'«Las historias que contamos muestran lo que una comunidad valora»',o:['Tema','Dato','Póster','Viaja'],ans:3,why:'Relación entre historias y valores. Vale en cualquier cultura y época.'}]},
+ {ph:'Llévatelo',k:'take',h:'Su tarjeta para llevar',take:'significado',q:'En una frase: ¿qué tiene una idea que viaja que no tiene una frase de póster?',key:'b_line'}
+]},
+{id:'evidencia',tag:'DÍA 2 · EVIDENCIA',title:'Tres cuadernos',steps:[
+ {ph:'Aprende',k:'learn',h:'¿Qué cuenta como evidencia?',
+  body:'<div class="ctx">A mitad de la Unidad del Año, la docente pregunta: <b>«¿Por qué importan las decisiones que tomamos sobre los recursos naturales?»</b></div>Evidencia es lo que el alumnado dice, hace o crea, y que nos deja ver lo que comprende. Sirve para decidir el siguiente paso.',
+  taps:[['¿Una prueba al final es evidencia?','Sí, pero llega tarde: ya no da tiempo de ajustar nada. La evidencia más útil se recoge durante la unidad.'],
+        ['¿Más datos es más comprensión?','No. Un alumno puede saber muchos datos sin conectarlos. Lo van a ver en el siguiente paso.']]},
+ {ph:'Pruébalo',k:'hl',h:'La lupa sobre Bruno'},
+ {ph:'Pruébalo',k:'branch',h:'Pregúntenle a Camila'},
+ {ph:'Pruébalo',k:'siobs',h:'Si observamos…, entonces mañana…'},
+ {ph:'Reto',k:'reto',h:'Tres cuadernos nuevos',body:'<div class="ctx">Unidad de 3.º · La docente pregunta: <b>«¿Por qué cambian los precios en el mercado?»</b></div>Cuenta el primer intento.',
+  items:[{meta:'Leo escribió:',txt:'«En el mercado hay frutas, verduras, carne y ropa. Los tomates cuestan 30 pesos.»',o:['Recuerda datos','Repite el póster','Comprende'],ans:0,why:'Datos correctos, ninguna conexión. No responde el «por qué».'},
+         {meta:'Valeria escribió:',txt:'«Si llueve mucho, se pierde la cosecha. Hay menos tomates y la gente los sigue queriendo, entonces suben de precio.»',o:['Recuerda datos','Repite el póster','Comprende'],ans:2,why:'Si…, entonces…: encadena causa y consecuencia.'},
+         {meta:'Iker escribió:',txt:'«Porque es importante apoyar a los comerciantes y comprar local.»',o:['Recuerda datos','Repite el póster','Comprende'],ans:1,why:'Una frase hecha. Todavía no sabemos qué comprende.'},
+         {meta:'¿Qué le preguntan a Iker?',txt:'Elijan la pregunta que deja ver lo que comprende.',o:['¿Qué significa apoyar?','¿Qué pasaría con el precio si llegaran el doble de tomates?','¡Muy bien, Iker!'],ans:1,why:'Una pregunta de «¿qué pasaría si…?» lo obliga a conectar. Las otras dos cierran la conversación.'}]},
+ {ph:'Llévatelo',k:'take',h:'Su tarjeta para llevar',take:'evidencia',q:'En una frase: ¿qué le preguntarían a un alumno cuya respuesta suena a póster?',key:'c_line'}
+]}],
+
+/* ======================= DÍA 3 ======================= */
 d3:[
- {id:'nucleo',tag:'DÍA 3 · SU UNIDAD',title:'El núcleo de su unidad',
-  ctx:'Trabajen sobre una unidad real que alguien del equipo vaya a enseñar.',
-  f:[{k:'e1',t:'x',q:'Unidad y grado'},
-     {k:'e2',t:'s',q:'Tema transdisciplinario',o:THEMES},
-     {k:'e3',t:'t',q:'Idea central: una relación que puede viajar (no un tema)'},
-     {k:'e4',t:'c',q:'Conceptos especificados: dos o tres',o:CONCEPTS},
-     {k:'e5',t:'t',q:'Línea de indagación 1 (una frase, no una pregunta)'},
-     {k:'e6',t:'t',q:'Línea de indagación 2'},
-     {k:'e7',t:'t',q:'Línea de indagación 3'},
-     {k:'e8',t:'s',q:'Tipo de indagación principal',o:['Estructurada','Guiada','Abierta']},
+{id:'nucleo',tag:'DÍA 3 · SU UNIDAD',title:'El núcleo de su unidad',steps:[
+ {ph:'Construyan',k:'form',h:'Su unidad',body:'Trabajen sobre una unidad real que alguien del equipo vaya a enseñar.',
+  f:[{k:'e1',t:'x',q:'Unidad y grado'},{k:'e2',t:'s',q:'Tema transdisciplinario',o:THEMES}],
+  ej:'«El mercado de mi comunidad», 3.º de primaria · Cómo nos organizamos'},
+ {ph:'Construyan',k:'form',h:'Su idea central',body:'Una relación que pueda viajar. Las pistas de abajo se encienden mientras escriben.',
+  f:[{k:'e3',t:'t',q:'Idea central',lights:1},{k:'e3k',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Dice una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']}],
+  ej:'«Los mercados conectan a quienes producen con quienes consumen.»',guide:'significado'},
+ {ph:'Construyan',k:'form',h:'Conceptos',body:'Elijan dos o tres. Cada concepto trae su pregunta: así guía la indagación.',
+  f:[{k:'e4',t:'cq',q:'Conceptos especificados',o:CONCEPTS}],
+  ej:'Función (¿cómo funciona un mercado?) · Conexión (¿cómo se conectan productores y compradores?) · Cambio'},
+ {ph:'Construyan',k:'form',h:'Líneas de indagación',body:'Tres frases, no preguntas. Cada una abre un camino para investigar la idea central.',
+  f:[{k:'e5',t:'x',q:'Línea 1'},{k:'e6',t:'x',q:'Línea 2'},{k:'e7',t:'x',q:'Línea 3'}],
+  ej:'1. Cómo funciona un mercado. 2. Cómo se conectan quienes producen y quienes compran. 3. Cómo cambian los mercados con el tiempo.'},
+ {ph:'Construyan',k:'form',h:'Tipo de indagación',
+  f:[{k:'e8',t:'cq1',q:'Tipo de indagación principal',o:[['Estructurada','La docente plantea la pregunta y el procedimiento.'],['Guiada','La docente plantea la pregunta; el alumnado decide cómo investigar.'],['Abierta','El alumnado plantea la pregunta y el camino.']]},
      {k:'e9',t:'c',q:'Atributos del perfil que desarrollará',o:PROFILE,opc:1}]},
- {id:'pruebas',tag:'DÍA 3 · DOS PRUEBAS',title:'Agencia y evidencia',
-  f:[{k:'g1',t:'t',q:'Agencia: ¿qué decide de verdad el alumnado?'},
-     {k:'g2',t:'t',q:'Evidencia: «Si observamos que…, entonces…»'},
-     {k:'g3',t:'t',q:'Acceso: ¿qué barrera quitan desde el diseño?',opc:1}]},
- {id:'compromiso',tag:'DÍA 3 · COMPROMISO',title:'Una cosa importante',
-  f:[{k:'h1',t:'t',q:'La pregunta que trajeron de la audiencia'},
-     {k:'h2',t:'t',q:'Lo que cambiaron en su unidad'},
-     {k:'h3',t:'t',q:'Compromiso de 30 días: quién, qué y cuándo'}]}
-]};
+ {ph:'Revisen',k:'review',h:'Revisen y envíen'}
+]},
+{id:'pruebas',tag:'DÍA 3 · DOS PRUEBAS',title:'Agencia y evidencia',steps:[
+ {ph:'Construyan',k:'form',h:'Prueba 1 · Agencia',body:'Agencia: el alumnado tiene voz, elección y propiedad sobre su aprendizaje.',
+  f:[{k:'g1',t:'t',q:'¿Qué decide de verdad el alumnado en su unidad?'}],
+  ej:'Cada equipo elige qué producto del mercado investiga y cómo presenta lo que descubrió.'},
+ {ph:'Construyan',k:'form',h:'Prueba 2 · Evidencia',body:'¿Qué van a escuchar o ver a mitad de la unidad, y qué harán con eso?',
+  f:[{k:'g2',t:'t',q:'«Si observamos que…, entonces…»'}],
+  ej:'Si observamos que solo listan productos, entonces mañana visitamos un puesto y preguntamos de dónde viene cada cosa.',guide:'evidencia'},
+ {ph:'Construyan',k:'form',h:'Prueba extra · Acceso',
+  f:[{k:'g3',t:'t',q:'¿Qué barrera quitan desde el diseño, sin bajar la meta?',opc:1}],
+  ej:'Pueden mostrar lo aprendido con un mapa explicado en voz alta, no solo por escrito.',guide:'acceso'},
+ {ph:'Revisen',k:'review',h:'Revisen y envíen'}
+]},
+{id:'compromiso',tag:'DÍA 3 · COMPROMISO',title:'Una cosa importante',steps:[
+ {ph:'Construyan',k:'form',h:'Después de la audiencia',
+  f:[{k:'h1',t:'t',q:'La pregunta que trajeron de la audiencia'},{k:'h2',t:'t',q:'Lo que cambiaron en su unidad (una sola cosa)'}]},
+ {ph:'Construyan',k:'form',h:'Compromiso de 30 días',
+  f:[{k:'h3',t:'t',q:'Quién, qué y cuándo'}],ej:'Ana y Luis prueban la línea 2 con 3.º B antes del 15 de noviembre y traen tres cuadernos a la junta.'},
+ {ph:'Revisen',k:'review',h:'Revisen y envíen'}
+]}]};
 
-function el(h){var d=document.createElement('div');d.innerHTML=h;return d.firstChild}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function teamIcon(){var t=TEAMS.filter(function(x){return x[0]==S.team})[0];return t?t[1]:'🧪'}
+/* ---------- simulator data ---------- */
+var SW=[{k:'lang',lb:'Idioma',o:['Solo inglés','Inglés o español']},
+ {k:'time',lb:'Tiempo',o:['20 minutos','El que necesiten']},
+ {k:'fmt',lb:'Cómo responden',o:['Solo por escrito','Escrito, oral o dibujo explicado']},
+ {k:'when',lb:'Cuándo',o:['Solo el último día','Tres momentos de la unidad']},
+ {k:'q',lb:'Las preguntas',o:['Explicar decisiones y consecuencias','Más fáciles: nombrar recursos'],trap:1}];
+var STU=[{n:'Diego',d:'Comprende el tema a fondo. Lee inglés despacio.',ok:function(c){return c.lang||c.fmt}},
+ {n:'Sofía',d:'Sabe mucho. Con el reloj enfrente, se bloquea.',ok:function(c){return c.time}},
+ {n:'Lucía',d:'Explica de maravilla en voz alta. Escribir le cuesta.',ok:function(c){return c.fmt}},
+ {n:'Mateo',d:'Aprende investigando. Si ese día está enfermo o nervioso, nadie ve lo que sabe.',ok:function(c){return c.when}}];
 
+/* ---------- travel data ---------- */
+var DEST=['🏜️ Un pueblo del Sahara, hoy','🛶 Tenochtitlan, 1500','🇳🇴 Una escuela en Noruega, hoy'];
+var TRIP=[
+ {s:'Los recursos naturales',lab:'Tema',L:[0,1,0],r:[['n','Llega… y no dice nada. ¿Qué pasa con ellos?'],['n','Llega… y no dice nada.'],['n','Llega… y no dice nada.']]},
+ {s:'El agua hierve a 100 °C',lab:'Dato',L:[0,0,0],r:[['n','Verdad. Y ahí termina la conversación.'],['x','¡Falla! A 2,240 metros de altura el agua hierve a unos 92 °C. Además: nada que indagar.'],['n','Verdad. Fin de la conversación.']]},
+ {s:'Los recursos naturales son importantes',lab:'Póster',L:[0,1,0],r:[['n','Todos asienten. Nadie aprende nada nuevo.'],['n','Llega como consejo. ¿Importantes para quién? ¿Por qué?'],['n','Verdad… y vacía. No dice qué investigar.']]},
+ {s:'Las decisiones sobre los recursos naturales cambian la vida de las comunidades',lab:'Viaja',L:[1,1,1],r:[['y','¿Quién decide quién usa el pozo? De esa decisión depende quién se queda y quién se va.'],['y','Los mexicas construyeron un gran dique para separar el agua dulce de la salada. Esa decisión protegió la ciudad.'],['y','Noruega decidió guardar el dinero del petróleo en un fondo para el futuro. Esa decisión cambió escuelas, hospitales y pensiones.']]}];
+var LNAMES=['Relación','Viaja','Se indaga'];
+
+/* ---------- tiles data ---------- */
+var TILES=[['Los inventos','s'],['Las personas','s'],['cambian','v'],['responden a','v'],['son','c'],['la forma en que vivimos','o'],['las necesidades de las personas','o'],['el teléfono de 2007','o',1],['muy importantes','j'],['y','c']];
+
+/* ---------- highlight data ---------- */
+var HL=[['Si',1],[' una fábrica usa mucha agua del río, el río se seca. ',0],['Sin agua',1],[' se mueren los peces ',0],['y',0],[' los pescadores se quedan sin trabajo. ',0],['Por eso',1],[' una decisión cambia a muchos.',0]];
+
+/* ---------- branch data ---------- */
+var BR=[{q:'¿Qué significa cuidar el planeta?',a:'No tirar basura y apagar la luz.',ok:0,fb:'Una pregunta de definición trae otra frase aprendida. Todavía no sabemos si comprende.'},
+ {q:'¡Muy bien, Camila! ¿Alguien más?',a:'(Camila se sienta. La clase sigue.)',ok:0,fb:'Felicitar cierra la conversación. La evidencia se perdió.'},
+ {q:'Imagina que un pueblo usa toda el agua del río para sus campos. ¿Qué pasa después?',a:'Mmm… el río se queda sin agua. Los animales se van o se mueren… y la gente de más abajo ya no tiene agua para tomar y se tiene que ir a otro lado.',ok:1,fb:'¡Ahí estaba! Camila sí comprende. El póster escondía su pensamiento. La pregunta también es parte de la evidencia.'}];
+
+/* ---------- si observamos data ---------- */
+var SO=[{n:'Ana',obs:'nombra muchos recursos pero no los conecta',o:['le pedimos que elija un recurso y explique qué pasa si se acaba','le damos una lista más larga para memorizar','pasamos al siguiente tema: ya sabe mucho'],ans:0,why:['Así sus datos se vuelven una cadena.','Más datos, la misma falta de conexión.','Saber muchos datos no es comprender.']},
+ {n:'Bruno',obs:'encadena causas y consecuencias',o:['le pedimos que pase su respuesta en limpio','repasamos renovables y no renovables','le damos un caso nuevo (una mina, un bosque) para que aplique su idea'],ans:2,why:['La limpieza no lo hace avanzar.','Ya superó ese nivel.','Aplicar la idea a un caso nuevo es el siguiente paso.']},
+ {n:'Camila',obs:'usa frases de póster, pero explica cuando le preguntamos «¿qué pasa después?»',o:['le bajamos la nota por respuesta vaga','le hacemos preguntas de «¿qué pasaría si…?» y le pedimos un ejemplo real','le pedimos que copie la respuesta de Bruno'],ans:1,why:['La nota no le enseña a explicar.','Así su comprensión sale a la luz y aprende a escribirla.','Copiar no es comprender.']}];
+
+/* ======================= render ======================= */
+function mods(){return MODS[S.day]}
+function mod(id){var r;['d2','d3'].forEach(function(d){MODS[d].forEach(function(m){if(m.id==id)r=m})});return r}
 function render(){
  var app=document.getElementById('app'),tb=document.getElementById('teamBtn');
  if(!S.team){tb.classList.add('hide');
   app.innerHTML='<h1>¿Qué equipo son?</h1><p>Elijan una sola vez. Un celular por equipo.</p><div class="teams">'+TEAMS.map(function(t){return '<button onclick="pick(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[0]+'</button>'}).join('')+'</div>';return}
  tb.classList.remove('hide');tb.textContent=teamIcon()+' '+S.team+' · cambiar';
- var day=S.day||(location.hash.indexOf('d3')>-1?'d3':'d2');
- if(location.hash.match(/^#d[23]/))day=location.hash.slice(1,3);
- S.day=day;
- var h='<div class="tabs"><button class="'+(day=='d2'?'on':'')+'" onclick="setDay(\'d2\')">Día 2</button><button class="'+(day=='d3'?'on':'')+'" onclick="setDay(\'d3\')">Día 3</button></div>';
- h+='<div class="nav">'+SECTIONS[day].map(function(s){return '<a href="javascript:go(\''+s.id+'\')" class="'+(S.sent[s.id]?'done':'')+'">'+(S.sent[s.id]?'✓ ':'')+s.title+'</a>'}).join('')+'</div>';
- SECTIONS[day].forEach(function(s){h+=card(s)});
- h+='<button class="btn ghost" onclick="present()">Modo presentación</button><p class="small">Sus respuestas se guardan en este celular. Si cambian de celular, empiezan de cero.</p>';
+ if(location.hash.match(/^#(d2|d3|guia)/))S.day=location.hash.slice(1).replace(/[^a-z0-9]/g,'');
+ S.day=S.day||'d2';
+ var h='<div class="tabs">'+[['d2','Día 2'],['d3','Día 3'],['guia','📘 Guía']].map(function(t){return '<button class="'+(S.day==t[0]?'on':'')+'" onclick="setDay(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div>';
+ if(S.day=='guia'){app.innerHTML=h+guide();return}
+ var ms=mods();S.cur=S.cur||{};var cur=S.cur[S.day];if(!mod(cur)||ms.indexOf(mod(cur))<0)cur=ms[0].id;S.cur[S.day]=cur;
+ h+='<div class="nav">'+ms.map(function(m){return '<button class="'+(m.id==cur?'cur ':'')+(S.sent[m.id]?'done':'')+'" onclick="openMod(\''+m.id+'\')">'+(S.sent[m.id]?'✓ ':'')+m.title+'</button>'}).join('')+'</div>';
+ h+=card(mod(cur));
+ h+='<button class="btn ghost" onclick="present()">Modo presentación</button><p class="small">Todo se guarda en este celular. Si cambian de celular, empiezan de cero.</p>';
  app.innerHTML=h;
+ var st=mod(cur).steps[S.st[cur]||0];if(st.k=='travel'&&X('significado').last!=null)showTrip(X('significado').last,true);
+ sv();
 }
-function card(s){
- var h='<div class="card'+(S.sent[s.id]?' sent':'')+'" id="c_'+s.id+'"><div class="tag">'+s.tag+'</div><h2>'+s.title+'</h2>';
- if(s.ctx)h+='<div class="ctx">'+s.ctx+'</div>';
- s.f.forEach(function(f){h+=field(f)});
- h+='<button class="btn" onclick="send(\''+s.id+'\',this)">📤 Enviar evidencia</button><div class="status" id="st_'+s.id+'">'+(S.sent[s.id]?'✓ Enviada '+S.sent[s.id]+'. Pueden enviarla otra vez si la mejoran.':'')+'</div></div>';
+function teamIcon(){var t=TEAMS.filter(function(x){return x[0]==S.team})[0];return t?t[1]:'🧪'}
+function card(m){
+ var i=Math.min(S.st[m.id]||0,m.steps.length-1),st=m.steps[i];
+ var h='<div class="card'+(S.sent[m.id]?' sent':'')+'" id="c_'+m.id+'"><div class="tag">'+m.tag+'</div><h2>'+m.title+'</h2>';
+ h+='<div class="prog">'+m.steps.map(function(_,j){return '<i class="'+(j<i?'past':j==i?'on':'')+'"></i>'}).join('')+'</div>';
+ h+='<div class="small">Paso '+(i+1)+' de '+m.steps.length+'</div><span class="phase ph-'+st.ph+'">'+st.ph.toUpperCase()+'</span><h3>'+st.h+'</h3>';
+ h+='<div id="stepbody">'+stepHTML(m,st,i)+'</div>';
+ h+='<div class="stepnav">'+(i>0?'<button class="back" onclick="step(\''+m.id+'\',-1)">‹ Atrás</button>':'')+(i<m.steps.length-1?'<button class="next" onclick="step(\''+m.id+'\',1)">Siguiente ›</button>':'')+'</div>';
+ return h+'</div>';
+}
+function step(id,d){var m=mod(id);S.st[id]=Math.max(0,Math.min(m.steps.length-1,(S.st[id]||0)+d));sv();render();var c=document.getElementById('c_'+id);if(c)c.scrollIntoView({behavior:'smooth',block:'start'})}
+function openMod(id){S.cur[S.day]=id;sv();render()}
+function stepHTML(m,st,i){
+ var f={learn:learnH,choice:retoH,reto:retoH,sim:simH,travel:travelH,tiles:tilesH,hl:hlH,branch:branchH,siobs:siobsH,take:takeH,form:formH,review:reviewH}[st.k];
+ return f(m,st,i);
+}
+/* learn */
+function learnH(m,st,i){
+ var h='<p>'+st.body+'</p>';
+ (st.taps||[]).forEach(function(t,j){var id=m.id+'_'+i+'_'+j,o=X(m.id)['t'+id];
+  h+='<button class="tap'+(o?' open':'')+'" onclick="tapR(\''+m.id+'\',\''+id+'\',this)">'+t[0]+'</button>'+(o?'<div class="rev">'+t[1]+'</div>':'<div class="rev hide">'+t[1]+'</div>')});
+ return h;
+}
+function tapR(mid,id,b){var x=X(mid);x['t'+id]=1;sv();b.classList.add('open');b.nextSibling.classList.remove('hide')}
+/* reto & choice */
+function rkey(m,i){return m.id+'_'+i}
+function retoH(m,st,i){
+ var R=S.r[rkey(m,i)]=S.r[rkey(m,i)]||{};
+ var h='<p>'+(st.body||'')+'</p>';
+ st.items.forEach(function(it,j){var r=R[j];
+  h+='<div class="item"><div class="meta">'+(it.meta||'')+'</div><div class="txt">'+it.txt+'</div><div class="opts">';
+  it.o.forEach(function(o,k){var cls='';if(r){if(k==it.ans&&r.done)cls=' right';else if(r.tried&&r.tried.indexOf(k)>-1)cls=' wrong'}
+   h+='<button class="opt'+cls+'" '+(r&&r.done?'disabled':'')+' onclick="ans(\''+m.id+'\','+i+','+j+','+k+')">'+o+'</button>'});
+  h+='</div>';
+  if(r&&r.done)h+='<div class="fb ok">'+(r.first?'✓ ':'✓ Ahora sí. ')+it.why+'</div>';
+  else if(r&&r.tried&&r.tried.length)h+='<div class="fb no">Todavía no. Discútanlo y prueben otra.</div>';
+  h+='</div>'});
+ if(st.k=='reto'){var n=st.items.length,d=0,f=0;st.items.forEach(function(_,j){if(R[j]&&R[j].done){d++;if(R[j].first)f++}});
+  if(d==n)h+='<div class="score">Reto completo: '+f+' de '+n+' al primer intento.</div>'}
+ return h;
+}
+function ans(mid,i,j,k){var m=mod(mid),st=m.steps[i],it=st.items[j],R=S.r[rkey(m,i)],r=R[j]=R[j]||{tried:[]};
+ if(r.done)return;if(k==it.ans){r.done=1;r.first=r.tried.length?0:1;r.pick=it.o[k]}else{if(r.tried.indexOf(k)<0)r.tried.push(k);r.miss=r.miss||it.o[k]}
+ sv();document.getElementById('stepbody').innerHTML=stepHTML(m,st,i)}
+/* simulator */
+function simH(m){
+ var c=X('acceso').sim=X('acceso').sim||{lang:0,time:0,fmt:0,when:0,q:0};
+ var h='<p>Esta es la prueba de la Unidad del Año. Cuatro alumnos saben mucho, pero la prueba no los deja mostrarlo. Muevan los interruptores hasta que los cuatro queden en verde.</p><div class="goal">🔒 <b>Meta:</b> explicar por qué importan las decisiones sobre los recursos naturales.</div>';
+ SW.forEach(function(s){h+='<div class="sw"><div class="lb">'+s.lb+'</div><div class="seg'+(s.trap?' trap':'')+'">'+s.o.map(function(o,k){return '<button class="'+(c[s.k]==k?'on':'')+' b'+k+'" onclick="simSet(\''+s.k+'\','+k+')">'+o+'</button>'}).join('')+'</div></div>'});
+ var low=c.q==1,g=0;
+ h+='<div class="studs">'+STU.map(function(s){var ok=s.ok(c);if(ok&&!low)g++;return '<div class="stud '+(low?'low':ok?'go':'')+'"><b>'+s.n+'</b><div class="d">'+s.d+'</div><div class="bar"><i></i></div><div class="st">'+(low?'Meta más baja':ok?'Puede mostrar lo que sabe':'La prueba no lo deja ver')+'</div></div>'}).join('')+'</div>';
+ if(low)h+='<div class="alert bad">⚠️ Eso no quita una barrera: cambia la meta. Si solo nombran recursos, ya no sabemos si comprenden. Regresen el interruptor.</div>';
+ else if(g==4){c.win=1;h+='<div class="alert good">✓ Cuatro de cuatro, con la misma meta. Eso es acceso.</div>'+(c.fmt?'<button class="tap open" style="cursor:default">Fíjense en Diego</button><div class="rev">«Escrito, oral o dibujo explicado» ayudó a Lucía y también a Diego. Un cambio de diseño casi siempre ayuda a más de una persona.</div>':'')}
+ else h+='<div class="small"><b>'+g+' de 4</b> pueden mostrar lo que saben.</div>';
+ c.green=low?0:g;sv();return h;
+}
+function simSet(k,v){var c=X('acceso').sim;c[k]=v;if(k=='q'&&v==1)c.trapped=1;sv();var m=mod('acceso');document.getElementById('stepbody').innerHTML=simH(m)}
+/* travel */
+function travelH(m){
+ var x=X('significado');x.trips=x.trips||[];
+ var h='<p>Elijan una frase y mándenla de viaje a tres lugares y épocas. Vean qué le pasa. Prueben las cuatro.</p><div class="chips" style="flex-direction:column">';
+ TRIP.forEach(function(t,k){h+='<button class="chip'+(x.last==k?' sel':'')+'" onclick="trip('+k+')">✈️ «'+t.s+'»</button>'});
+ h+='</div><div id="tripout"></div><div class="small">Viajes hechos: '+x.trips.length+' de 4 '+x.trips.map(function(k){return '<span class="sent-chip">'+TRIP[k].lab+'</span>'}).join('')+'</div>';
+ if(x.trips.length==4)h+='<div class="alert good">Solo una frase hizo el viaje completo. La idea central de la Unidad del Año se quedó en la aduana.</div>';
+ return h;
+}
+function trip(k){var x=X('significado');x.last=k;if(x.trips.indexOf(k)<0)x.trips.push(k);sv();var m=mod('significado');document.getElementById('stepbody').innerHTML=travelH(m);showTrip(k)}
+function showTrip(k,instant){var t=TRIP[k],o=document.getElementById('tripout');if(!o)return;
+ o.innerHTML='<div class="lights">'+LNAMES.map(function(n,j){return '<span id="lt'+j+'">'+n+'</span>'}).join('')+'</div><div class="dest">'+DEST.map(function(d,j){return '<div class="dc '+t.r[j][0]+'" id="dc'+j+'"><b>'+d+'</b><p>'+t.r[j][1]+'</p></div>'}).join('')+'</div>';
+ [0,1,2].forEach(function(j){setTimeout(function(){var e=document.getElementById('dc'+j);if(e)e.classList.add('in')},instant?0:350+j*650)});
+ setTimeout(function(){t.L.forEach(function(v,j){var e=document.getElementById('lt'+j);if(e&&v)e.classList.add('on')})},instant?0:2400);}
+/* tiles */
+function tileEval(seq){
+ var types=seq.map(function(i){return TILES[i][1]}),rel=false;
+ for(var a=0;a<types.length;a++)if(types[a]=='v'){var s=types.slice(0,a).indexOf('s')>-1,o=types.slice(a+1).indexOf('o')>-1;if(s&&o)rel=true}
+ var local=seq.some(function(i){return TILES[i][2]}),judg=types.indexOf('j')>-1,starts=types[0]=='s';
+ return [rel&&starts,seq.length>0&&!local,seq.length>0&&rel&&!judg&&!local];
+}
+function tilesH(m){
+ var x=X('significado');x.tiles=x.tiles||[];var seq=x.tiles,L=tileEval(seq);
+ var sent=seq.map(function(i){return TILES[i][0]}).join(' ');
+ var h='<p>Armen una idea central para <b>otra</b> unidad: los inventos. Toquen las piezas en orden. Las luces de la aduana se encienden solas.</p>';
+ h+='<div class="build">'+(sent?esc(sent.charAt(0).toUpperCase()+sent.slice(1))+'.':'<span class="ph">Toquen piezas para armar la frase…</span>')+'</div>';
+ h+='<div class="lights">'+LNAMES.map(function(n,j){return '<span class="'+(L[j]?'on':'')+'">'+n+'</span>'}).join('')+'</div>';
+ h+='<div class="tiles">'+TILES.map(function(t,i){return '<button class="tile '+t[1]+'" '+(seq.indexOf(i)>-1&&t[0]!='y'?'disabled':'')+' onclick="tileAdd('+i+')">'+t[0]+'</button>'}).join('')+'</div>';
+ h+='<div class="minor"><button onclick="tileUndo()">↶ Quitar la última</button><button onclick="tileReset()">Empezar de nuevo</button></div>';
+ var msg='';
+ if(seq.length){if(L[0]&&L[1]&&L[2]){msg='<div class="alert good">✓ Admitida por la aduana. Dice una relación, viaja y se puede indagar.</div>';x.tileok=sent}
+  else if(seq.some(function(i){return TILES[i][2]}))msg='<div class="alert bad">«El teléfono de 2007» amarra la idea a un objeto y una fecha. Así no viaja.</div>';
+  else if(seq.some(function(i){return TILES[i][1]=='j'}))msg='<div class="alert bad">«Muy importantes» es póster: suena bien pero no dice cómo se relacionan.</div>';
+  else if(!L[0])msg='<div class="small">Falta la relación: una pieza azul oscuro + un verbo naranja + una pieza verde azulado.</div>'}
+ h+=msg;x.tilelast=sent;sv();
+ return h;
+}
+function tileAdd(i){var x=X('significado');x.tiles.push(i);sv();document.getElementById('stepbody').innerHTML=tilesH(mod('significado'))}
+function tileUndo(){var x=X('significado');x.tiles.pop();sv();document.getElementById('stepbody').innerHTML=tilesH(mod('significado'))}
+function tileReset(){var x=X('significado');x.tiles=[];sv();document.getElementById('stepbody').innerHTML=tilesH(mod('significado'))}
+/* highlight */
+function hlH(m){
+ var x=X('evidencia');x.hl=x.hl||[];
+ var h='<p>Bruno y Ana responden la misma pregunta. Ana sabe <b>más datos</b> que Bruno. Aun así, Bruno comprende más. Toquen en el cuaderno de Bruno las <b>palabras</b> que convierten datos en comprensión. Después toquen «Revisar».</p>';
+ h+='<div class="nb"><b>Ana</b><p>«Hay recursos renovables y no renovables. Renovables: el agua, el sol y el viento. No renovables: el petróleo, el carbón y el gas.»</p></div>';
+ h+='<div class="hl"><b style="color:var(--navy)">Bruno</b><br>«'+HL.map(function(t,i){var c='';var on=x.hl.indexOf(i)>-1;if(x.check){if(t[1]&&on)c='good';else if(t[1])c='miss';else if(on)c='bad'}else if(on)c='sel';
+   return '<span class="'+c+'" onclick="hlTap('+i+')">'+esc(t[0])+'</span>'}).join('')+'»</div>';
+ if(!x.check)h+='<button class="btn" onclick="hlCheck()">Revisar</button>';
+ else{var good=HL.filter(function(t,i){return t[1]&&x.hl.indexOf(i)>-1}).length;x.hlscore=good;
+  h+='<div class="alert good">Encontraron '+good+' de 3. <b>Si… · Sin agua… · Por eso…</b> Bruno encadena causas y consecuencias. Ana tiene más datos, pero no los conecta.</div><div class="minor"><button onclick="hlReset()">Intentar otra vez</button></div>'}
+ sv();return h;
+}
+function hlTap(i){var x=X('evidencia');if(x.check)return;var k=x.hl.indexOf(i);if(k>-1)x.hl.splice(k,1);else x.hl.push(i);sv();document.getElementById('stepbody').innerHTML=hlH(mod('evidencia'))}
+function hlCheck(){var x=X('evidencia');x.check=1;sv();document.getElementById('stepbody').innerHTML=hlH(mod('evidencia'))}
+function hlReset(){var x=X('evidencia');x.check=0;x.hl=[];sv();document.getElementById('stepbody').innerHTML=hlH(mod('evidencia'))}
+/* branch */
+function branchH(m){
+ var x=X('evidencia');x.br=x.br||[];
+ var h='<div class="nb"><b>Camila</b><p>«Porque tenemos que cuidar el planeta y no desperdiciar. Es muy importante cuidar la naturaleza.»</p></div><p>Suena a póster. ¿Comprende o no? Ustedes son la docente: elijan qué preguntarle. Prueben las tres.</p><div class="chat">';
+ x.br.forEach(function(k){var b=BR[k];h+='<div class="bub t">'+b.q+'</div><div class="bub '+(k==1?'n':'s')+'">'+(k==1?'':'Camila: ')+b.a+'</div><div class="fb '+(b.ok?'ok':'no')+'">'+b.fb+'</div>'});
+ h+='</div><div class="chips" style="flex-direction:column">'+BR.map(function(b,k){return x.br.indexOf(k)>-1?'':'<button class="chip" onclick="ask('+k+')">💬 '+b.q+'</button>'}).join('')+'</div>';
+ if(x.br.indexOf(2)>-1)h+='<div class="take" style="margin-top:12px"><h3>Preguntas que abren</h3><ol><li>¿Qué pasaría si…?</li><li>¿Qué pasa después?</li><li>¿Cómo lo sabes?</li><li>¿Me das un ejemplo?</li></ol></div>';
+ return h;
+}
+function ask(k){var x=X('evidencia');if(x.br.indexOf(k)<0)x.br.push(k);sv();document.getElementById('stepbody').innerHTML=branchH(mod('evidencia'))}
+/* si observamos */
+function siobsH(m){
+ var x=X('evidencia');x.so=x.so||{};x.sot=x.sot||{};
+ var h='<p>Ya vieron a los tres. Ahora decidan el siguiente paso para cada uno. Toquen una opción: la frase se arma sola.</p>';
+ SO.forEach(function(s,i){var r=x.so[i],t=x.sot[i]||[];
+  h+='<div class="item"><div class="txt">Si observamos que <b>'+s.n+'</b> '+s.obs+', entonces mañana…</div><div class="opts" style="flex-direction:column;align-items:stretch">';
+  s.o.forEach(function(o,k){var c=r!=null&&k==s.ans?' right':t.indexOf(k)>-1?' wrong':'';h+='<button class="opt'+c+'" style="text-align:left;border-radius:10px" '+(r!=null?'disabled':'')+' onclick="soPick('+i+','+k+')">'+o+'</button>'});
+  h+='</div>';
+  if(r!=null)h+='<div class="fb ok">✓ '+s.why[s.ans]+'</div>';else if(t.length)h+='<div class="fb no">'+s.why[t[t.length-1]]+' Prueben otra.</div>';
+  h+='</div>'});
+ return h;
+}
+function soPick(i,k){var x=X('evidencia'),s=SO[i];x.sot[i]=x.sot[i]||[];if(k==s.ans){x.so[i]=k;x.sof=x.sof||{};x.sof[i]=x.sot[i].length?0:1}else if(x.sot[i].indexOf(k)<0)x.sot[i].push(k);sv();document.getElementById('stepbody').innerHTML=siobsH(mod('evidencia'))}
+function soSentence(i){var s=SO[i];return 'Si observamos que '+s.n+' '+s.obs+', entonces mañana '+s.o[s.ans]+'.'}
+/* take */
+function takeCard(id){var t=TAKE[id];return '<div class="take"><h3>📘 '+t.h+'</h3><ol>'+t.li.map(function(l){return '<li>'+l+'</li>'}).join('')+'</ol></div>'}
+function takeH(m,st){
+ var h='<p>Esta tarjeta queda guardada en la pestaña <b>📘 Guía</b>. El sábado la van a necesitar.</p>'+takeCard(st.take);
+ h+='<div class="f"><label>'+st.q+'</label><textarea oninput="setv(\''+st.key+'\',this.value)">'+esc(S.a[st.key])+'</textarea></div>';
+ if(st.key2)h+='<div class="f"><label>'+st.q2+'<span class="opc">OPCIONAL</span></label><textarea oninput="setv(\''+st.key2+'\',this.value)">'+esc(S.a[st.key2])+'</textarea></div>';
+ h+='<div class="small">Al enviar, llegan a la carpeta del equipo sus resultados del reto y esta frase.</div>'+sendBtn(m.id);
+ return h;
+}
+function sendBtn(id){return '<button class="btn" onclick="send(\''+id+'\',this)">📤 Enviar evidencia</button><div class="status" id="st_'+id+'">'+(S.sent[id]?'✓ Enviada '+S.sent[id]+'. Pueden enviarla otra vez si la mejoran.':'')+'</div>'}
+/* guide */
+function guide(){
+ return '<h1>📘 Guía de bolsillo</h1><p class="small">Lo que aprendieron el Día 2. Consúltenla el sábado mientras construyen su unidad.</p>'+['acceso','significado','evidencia'].map(function(k){return takeCard(k)}).join('')
+ +'<div class="card"><div class="tag">PREGUNTAS QUE ABREN</div><p>¿Qué pasaría si…? · ¿Qué pasa después? · ¿Cómo lo sabes? · ¿Me das un ejemplo?</p></div>'
+ +'<div class="card"><div class="tag">LOS SIETE CONCEPTOS Y SUS PREGUNTAS</div>'+CONCEPTS.map(function(c){return '<p><b>'+c[0]+'</b> · '+c[1]+'</p>'}).join('')+'</div>';
+}
+/* Day 3 form */
+function lightsFor(v){v=(v||'').trim();var w=v.split(/\s+/).filter(Boolean).length;
+ var rel=w>=6&&/\b(cambia|cambian|depende|dependen|afecta|afectan|influye|influyen|conecta|conectan|responde|responden|se adapta|se adaptan|transforma|transforman|permite|permiten|muestra|muestran|refleja|reflejan|determina|determinan|moldea|moldean|crea|crean|impulsa|impulsan|genera|generan|ayuda|ayudan|construye|construyen|expresa|expresan|organiza|organizan|interactúa|interactúan|comparte|comparten|forma|forman|puede|pueden|requiere|requieren|provoca|provocan|une|unen|relaciona|relacionan)\b/i.test(v);
+ var trav=w>0&&!/\d/.test(v)&&!/\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+/.test(v.slice(1).replace(/[.!?]\s+[A-ZÁÉÍÓÚÑ]/g,''));
+ var inq=w>0&&rel&&!/(debemos|hay que|tenemos que|deberíamos|es importante|son importantes|es bueno|es malo|son buenos|son malos)/i.test(v);
+ return [rel,trav,inq];}
+function lightsHTML(k){var L=lightsFor(S.a[k]),v=(S.a[k]||'').trim();var tip=!v?'':!L[0]?'Pista: ¿dice cómo se relacionan dos cosas? Busquen un verbo de relación.':!L[1]?'Pista: ¿nombra un lugar, una fecha o un número? Quítenlo para que viaje.':!L[2]?'Pista: suena a consejo de póster.':'Las pistas se ven bien. Confírmenlo ustedes abajo.';
+ return '<div class="lights">'+LNAMES.map(function(n,j){return '<span class="'+(L[j]?'on':'')+'">'+n+'</span>'}).join('')+'</div><div class="small">'+tip+'</div>'}
+function formH(m,st){
+ var h=st.body?'<p>'+st.body+'</p>':'';
+ st.f.forEach(function(f){h+=field(f)});
+ if(st.ej)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Ver un ejemplo</button><div class="rev hide">'+st.ej+'</div>';
+ if(st.guide)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Recordar lo del Día 2</button><div class="rev hide" style="background:none;padding:0;border:0">'+takeCard(st.guide)+'</div>';
  return h;
 }
 function field(f){
- if(f.t=='n')return '<div class="nb"><b>'+f.who+'</b><p>«'+f.txt+'»</p></div>';
  var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>';
- if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value)">'+esc(v)+'</textarea></div>';
+ if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value'+(f.lights?',1':'')+')">'+esc(v)+'</textarea>'+(f.lights?'<div id="lights_'+f.k+'">'+lightsHTML(f.k)+'</div>':'')+'</div>';
  if(f.t=='x')return '<div class="f">'+lab+'<input type="text" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value)"></div>';
  if(f.t=='s')return '<div class="f">'+lab+'<select onchange="setv(\''+f.k+'\',this.value)"><option value="">Elijan…</option>'+f.o.map(function(o){return '<option'+(v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select></div>';
- if(f.t=='c'){var a=v||[];return '<div class="f">'+lab+'<div class="chips">'+f.o.map(function(o,i){return '<button class="chip'+(a.indexOf(o)>-1?' sel':'')+'" onclick="tog(\''+f.k+'\','+i+',this)">'+o+'</button>'}).join('')+'</div></div>'}
+ if(f.t=='c'||f.t=='cq'||f.t=='cq1'){var a=v||[];if(f.t=='cq1'&&!Array.isArray(a))a=[a];
+  return '<div class="f">'+lab+'<div class="chips">'+f.o.map(function(o,i){var n=Array.isArray(o)?o[0]:o,sub=Array.isArray(o)?'<small>'+o[1]+'</small>':'';return '<button class="chip'+(a.indexOf(n)>-1?' sel':'')+'" onclick="tog(\''+f.k+'\','+i+',this)">'+n+sub+'</button>'}).join('')+'</div></div>'}
  if(f.t=='k'){var b=v||[];return '<div class="f">'+lab+f.o.map(function(o,i){return '<label class="chk"><input type="checkbox"'+(b.indexOf(o)>-1?' checked':'')+' onchange="tog(\''+f.k+'\','+i+')"> '+o+'</label>'}).join('')+'</div>'}
  return '';
 }
-function find(k){var r;['d2','d3'].forEach(function(d){SECTIONS[d].forEach(function(s){s.f.forEach(function(f){if(f.k==k)r=f})})});return r}
-function setv(k,v){S.a[k]=v;sv()}
-function tog(k,i,btn){var f=find(k),o=f.o[i],a=S.a[k]||[];var j=a.indexOf(o);if(j>-1)a.splice(j,1);else a.push(o);S.a[k]=a;sv();if(btn)btn.classList.toggle('sel')}
-function pick(t){S.team=t;sv();render();window.scrollTo(0,0)}
-function changeTeam(){if(confirm('¿Cambiar de equipo? Las respuestas guardadas se quedan en este celular.')){S.team='';sv();render()}}
-function setDay(d){S.day=d;sv();history.replaceState(null,'','#'+d);render();window.scrollTo(0,0)}
-function go(id){var c=document.getElementById('c_'+id);if(c)c.scrollIntoView({behavior:'smooth'})}
+function allFields(m){var r=[];m.steps.forEach(function(s){(s.f||[]).forEach(function(f){r.push(f)})});return r}
+function findF(k){var r;MODS.d3.forEach(function(m){allFields(m).forEach(function(f){if(f.k==k)r=f})});return r}
 function val(f){var v=S.a[f.k];if(Array.isArray(v))return v.join(', ');return v||''}
-function items(s){var it=[];if(s.ctx)it.push({q:'Contexto',a:s.ctx.replace(/<[^>]+>/g,'')});
- s.f.forEach(function(f){if(f.t=='n')it.push({q:f.who+' escribió',a:'«'+f.txt+'»'});else it.push({q:f.q,a:val(f)||'—'})});return it}
-function secById(id){var r;['d2','d3'].forEach(function(d){SECTIONS[d].forEach(function(s){if(s.id==id)r=s})});return r}
+function reviewH(m){
+ var h='<p>Revisen. Si algo falta, toquen «Atrás». Cuando estén listos, envíen.</p>';
+ allFields(m).forEach(function(f){var v=val(f);h+='<div class="item"><div class="meta">'+f.q+(f.opc?' · opcional':'')+'</div><div style="font-size:15px;font-weight:600">'+(v?esc(v):'<span style="color:var(--bad)">Falta</span>')+'</div></div>'});
+ return h+sendBtn(m.id);
+}
+function setv(k,v,lt){S.a[k]=v;sv();if(lt){var e=document.getElementById('lights_'+k);if(e)e.innerHTML=lightsHTML(k)}}
+function tog(k,i,btn){var f=findF(k),o=f.o[i];o=Array.isArray(o)?o[0]:o;
+ if(f.t=='cq1'){S.a[k]=o;sv();btn.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel')});btn.classList.add('sel');return}
+ var a=S.a[k]||[];var j=a.indexOf(o);if(j>-1)a.splice(j,1);else a.push(o);S.a[k]=a;sv();if(btn)btn.classList.toggle('sel')}
+function pick(t){S.team=t;sv();render();window.scrollTo(0,0)}
+function changeTeam(){if(confirm('¿Cambiar de equipo? Lo guardado se queda en este celular.')){S.team='';sv();render()}}
+function setDay(d){S.day=d;sv();history.replaceState(null,'','#'+d);render();window.scrollTo(0,0)}
+
+/* ======================= evidence ======================= */
+function retoItems(m){var it=[];m.steps.forEach(function(st,i){if(st.k!='reto')return;var R=S.r[rkey(m,i)]||{},f=0,d=0;
+ st.items.forEach(function(x,j){var r=R[j];if(r&&r.done){d++;if(r.first)f++}it.push({q:'Reto · '+(x.meta?x.meta+' ':'')+x.txt.replace(/<[^>]+>/g,''),a:!r?'Sin responder':r.done?(r.first?'✓ al primer intento: ':'✓ después de corregir (primero eligieron «'+r.miss+'»): ')+x.o[x.ans]:'Sin terminar'})});
+ it.unshift({q:'RESULTADO DEL RETO',a:f+' de '+st.items.length+' al primer intento ('+d+' completas)'})});return it}
+function items(id){var m=mod(id),it=[],x=X(id);
+ if(id=='acceso'){var c=x.sim||{};it.push({q:'Simulador · configuración final',a:SW.map(function(s){return s.lb+': '+s.o[c[s.k]||0]}).join(' · ')});
+  it.push({q:'Simulador · resultado',a:(c.green||0)+' de 4 alumnos en verde'+(c.trapped?'. Probaron bajar la meta y el simulador los detuvo.':'.')});
+  it=it.concat(retoItems(m));it.push({q:'Con sus palabras: quitar una barrera vs. bajar la meta',a:S.a.a_line||'—'});if(S.a.a_real)it.push({q:'Un alumno real',a:S.a.a_real})}
+ if(id=='significado'){it.push({q:'Viajes hechos',a:(x.trips||[]).map(function(k){return TRIP[k].lab}).join(', ')||'—'});
+  it.push({q:'Taller de piezas · frase admitida',a:x.tileok||('No llegaron a una frase admitida. Última frase: '+(x.tilelast||'—'))});
+  it=it.concat(retoItems(m));it.push({q:'Con sus palabras: idea que viaja vs. frase de póster',a:S.a.b_line||'—'})}
+ if(id=='evidencia'){it.push({q:'La lupa sobre Bruno',a:x.check?(x.hlscore||0)+' de 3 palabras de conexión encontradas':'No revisado'});
+  it.push({q:'Preguntas que le hicieron a Camila (en orden)',a:(x.br||[]).map(function(k){return BR[k].q}).join(' → ')||'—'});
+  SO.forEach(function(s,i){it.push({q:'Si observamos… · '+s.n,a:(x.so&&x.so[i]!=null)?soSentence(i)+((x.sof&&x.sof[i])?' (primer intento)':' (después de corregir)'):'Sin terminar'})});
+  it=it.concat(retoItems(m));it.push({q:'Con sus palabras: qué preguntarle a un alumno que suena a póster',a:S.a.c_line||'—'})}
+ if(MODS.d3.indexOf(m)>-1)allFields(m).forEach(function(f){it.push({q:f.q,a:val(f)||'—'})});
+ return it}
 function send(id,btn){
- var s=secById(id),st=document.getElementById('st_'+id);
- var empty=s.f.filter(function(f){return f.k&&!f.opc&&!val(f)});
- if(empty.length&&!confirm('Faltan '+empty.length+' respuesta(s). ¿Enviar de todos modos?'))return;
+ var m=mod(id),st=document.getElementById('st_'+id);
+ var line={acceso:'a_line',significado:'b_line',evidencia:'c_line'}[id];
+ if(line&&!S.a[line]&&!confirm('Falta su frase. ¿Enviar de todos modos?'))return;
+ if(!line){var empty=allFields(m).filter(function(f){return !f.opc&&!val(f)});if(empty.length&&!confirm('Faltan '+empty.length+' respuesta(s). ¿Enviar de todos modos?'))return}
  btn.disabled=true;st.className='status';st.textContent='Enviando…';
- var body=JSON.stringify({team:S.team,title:s.tag+' · '+s.title,items:items(s)});
+ var body=JSON.stringify({team:S.team,title:m.tag+' · '+m.title,items:items(id)});
  var done=false,timer=setTimeout(function(){if(!done){done=true;fail()}},25000);
- function ok(){var t=new Date();S.sent[id]=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);sv();btn.disabled=false;st.className='status ok';st.textContent='✓ Evidencia enviada a la carpeta del equipo '+S.team+'.';document.getElementById('c_'+id).classList.add('sent');var a=document.querySelector('.nav a[href*="'+id+'"]');if(a){a.classList.add('done');if(a.textContent.indexOf('✓')<0)a.textContent='✓ '+a.textContent}}
+ function ok(){var t=new Date();S.sent[id]=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);sv();btn.disabled=false;st.className='status ok';st.textContent='✓ Evidencia enviada a la carpeta del equipo '+S.team+'.';document.getElementById('c_'+id).classList.add('sent')}
  function fail(){btn.disabled=false;st.className='status bad';st.innerHTML='No se pudo enviar. Revisen el wifi y toquen otra vez. <a href="javascript:printSec(\''+id+'\')">Descargar copia en PDF</a>'}
  fetch(ENDPOINT,{method:'POST',body:body}).then(function(r){return r.json()}).then(function(j){if(done)return;done=true;clearTimeout(timer);if(j&&j.ok)ok();else fail()}).catch(function(){if(done)return;done=true;clearTimeout(timer);fail()});
 }
-function printSec(id){document.querySelectorAll('.card').forEach(function(c){c.classList.toggle('printme',c.id=='c_'+id)});window.print()}
+function printSec(id){var w=window.open('','_blank');if(!w){window.print();return}
+ w.document.write('<meta charset="utf-8"><title>Evidencia</title><body style="font-family:Arial;margin:24px"><h2>'+esc(mod(id).tag+' · '+mod(id).title)+'</h2><p>Equipo '+esc(S.team)+'</p>'+items(id).map(function(i){return '<p><b>'+esc(i.q)+'</b><br>'+esc(i.a)+'</p>'}).join('')+'</body>');w.document.close();w.print()}
 function present(){
- var d=S.day||'d2',h='<div class="pres"><button class="x" onclick="this.parentNode.remove()">Cerrar</button><div class="tag" style="color:#1ab7ea">'+teamIcon()+' EQUIPO '+esc(S.team).toUpperCase()+'</div>';
- var picks=d=='d2'?[['ACCESO · ANTES','a2'],['ACCESO · AHORA','a3'],['IDEA CENTRAL NUEVA','b2'],['DÓNDE MÁS ES VERDAD','b4'],['SI OBSERVAMOS QUE…','c4'],['…ENTONCES MAÑANA','c5']]
-  :[['UNIDAD','e1'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS','e4'],['LÍNEAS DE INDAGACIÓN','e5'],['','e6'],['','e7'],['AGENCIA','g1'],['EVIDENCIA','g2']];
- picks.forEach(function(p){var f=find(p[1]),v=f?val(f):'';if(!v)return;h+=(p[0]?'<h2>'+p[0]+'</h2>':'')+'<p>'+esc(v)+'</p>'});
- document.body.appendChild(el(h+'</div>'));
+ var d=S.day=='d3'?'d3':'d2',h='<div class="pres"><button class="x" onclick="this.parentNode.remove()">Cerrar</button><div class="tag" style="color:#1ab7ea">'+teamIcon()+' EQUIPO '+esc(S.team).toUpperCase()+'</div>';
+ function add(t,v){if(v)h+=(t?'<h2>'+t+'</h2>':'')+'<p>'+esc(v)+'</p>'}
+ if(d=='d2'){var a=X('acceso').sim,sg=X('significado'),ev=X('evidencia');
+  if(a)add('ACCESO · NUESTROS CAMBIOS',SW.filter(function(s){return !s.trap&&a[s.k]==1}).map(function(s){return s.lb+': '+s.o[1]}).join(' · '));
+  add('BARRERA VS. META',S.a.a_line);
+  add('UNA IDEA QUE VIAJA',sg.tileok);add('IDEA QUE VIAJA VS. PÓSTER',S.a.b_line);
+  if(ev.so&&ev.so[2]!=null)add('SI OBSERVAMOS…',soSentence(2));
+  add('LA PREGUNTA QUE ABRE',S.a.c_line);}
+ else{[['UNIDAD','e1'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS','e4'],['LÍNEAS DE INDAGACIÓN','e5'],['','e6'],['','e7'],['AGENCIA','g1'],['EVIDENCIA','g2']].forEach(function(p){var f=findF(p[1]);add(p[0],f?val(f):'')})}
+ var e=document.createElement('div');e.innerHTML=h+'</div>';document.body.appendChild(e.firstChild);
 }
 render();
 </script>

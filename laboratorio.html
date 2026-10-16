@@ -145,9 +145,9 @@ function setTeam(){document.getElementById('teamLabel').textContent=state.team?(
 function home(){
   setTeam();var a=app();
   if(!state.team){a.innerHTML='<h1>Bienvenidos al laboratorio</h1><p class="lead">Ayer y anteayer vivieron <b>por qué</b> el PEP funciona. Hoy aprenden <b>con qué herramientas</b> se construye una unidad: los planos del PEP.</p><div class="card"><h3>Elijan su equipo</h3><div class="opts" id="tm"></div></div>';
-    TEAMS.forEach(function(t){var b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=function(){state.team=t;save();home()};a.querySelector('#tm').appendChild(b)});return}
+    TEAMS.forEach(function(t){var b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=function(){state.team=t;save();route()};a.querySelector('#tm').appendChild(b)});return}
   var n=Object.keys(state.done).length;
-  a.innerHTML='<h1>Los planos del PEP</h1><p class="lead">Cinco estaciones. En cada una: <b>1.</b> lean la información, <b>2.</b> resuelvan el reto en equipo, <b>3.</b> ganen una pieza del código. <b>Empiecen por la estación 1</b>; después, en cualquier orden.</p><div class="grid" id="st"></div><div class="card" id="fin"></div>';
+  a.innerHTML='<h1>Los planos del PEP</h1><p class="lead">Cinco estaciones. En cada una: <b>1.</b> lean la información, <b>2.</b> resuelvan el reto en equipo, <b>3.</b> ganen una pieza del código. Las estaciones están en carteles alrededor del salón: escaneen el QR de cada cartel. Pueden hacerlas en cualquier orden.</p><div class="grid" id="st"></div><div class="card" id="fin"></div>';
   S.forEach(function(st,i){var d=!!state.done[st.id];var b=document.createElement('button');b.className='station'+(d?' done':'');
     b.innerHTML='<div class="n">ESTACIÓN '+(i+1)+'</div><div class="t">'+st.name+'</div><div class="st">'+(d?'✓ Pieza: '+st.piece:'Pendiente')+'</div>';b.onclick=function(){station(i)};a.querySelector('#st').appendChild(b)});
   var f=a.querySelector('#fin');
@@ -167,9 +167,11 @@ function station(i){
       if(ans[k]===undefined){return}
       if(ans[k]===q[1]){ok++;d.classList.add('right');fb.textContent='✓ '+q[2]}else{d.classList.add('wrong');fb.textContent='Todavía no. Vuelvan a la información de arriba y discutan.'}});
     var res=a.querySelector('#res');
-    if(ok===st.qs.length){state.done[st.id]=1;save();res.innerHTML='¡Estación completa! Pieza del código: <span class="code" style="font-size:22px;padding:4px 12px">'+st.piece+'</span> <button class="btn ghost" id="next">Volver a las estaciones</button>';a.querySelector('#next').onclick=home}
+    if(ok===st.qs.length){state.done[st.id]=1;save();res.innerHTML='¡Estación completa! Busquen otro cartel. Pieza del código: <span class="code" style="font-size:22px;padding:4px 12px">'+st.piece+'</span> <button class="btn ghost" id="next">Volver a las estaciones</button>';a.querySelector('#next').onclick=home}
     else{res.textContent=ok+' de '+st.qs.length+' correctas. Corrijan las marcadas en rojo.'}};
   window.scrollTo(0,0)}
-home();
+function route(){var m=/^#e([1-5])$/.exec(location.hash);if(state.team&&m){var i=+m[1]-1;history.replaceState(null,'',location.pathname);station(i)}else home()}
+window.addEventListener('hashchange',route);
+route();
 </script>
 </body></html>

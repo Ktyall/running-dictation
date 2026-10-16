@@ -84,7 +84,7 @@ p{margin:6px 0}
 .dc b{font-size:14px}.dc p{font-size:14.5px;margin:3px 0 0}
 .dc.y{border-color:var(--ok);background:var(--okbg)}.dc.n{border-color:var(--grey);background:#f3f5f7}.dc.x{border-color:var(--bad);background:var(--badbg)}
 .lights{display:flex;gap:6px;margin:10px 0}
-.lights span{flex:1;text-align:center;font-size:12.5px;font-weight:800;border-radius:20px;padding:7px 4px;background:#eef2f5;color:var(--grey);border:2px solid #dde4ea;transition:all .3s}
+.lights span{flex:1;text-align:center;font-size:11.5px;line-height:1.2;font-weight:800;border-radius:12px;padding:6px 4px;background:#eef2f5;color:var(--grey);border:2px solid #dde4ea;transition:all .3s}
 .lights span.on{background:var(--ok);border-color:var(--ok);color:#fff}
 .sent-chip{display:inline-block;margin:3px 4px 0 0;font-size:12px;font-weight:700;background:var(--mist);color:var(--blue);border-radius:12px;padding:3px 8px}
 /* tiles */
@@ -192,13 +192,13 @@ var MODS={d2:[
   q2:'Un alumno real de su clase al que le ayudaría esto',key2:'a_real'}
 ]},
 {id:'significado',tag:'DÍA 2 · SIGNIFICADO',title:'Una idea que viaja',steps:[
- {ph:'Aprende',k:'learn',h:'Cuatro tipos de frase',
-  body:'En la aduana clasificaron 12 tarjetas. Toquen cada tipo para ver por qué es así.',
-  taps:[['TEMA · «Los recursos naturales»','Nombra de qué se trata la unidad. No dice nada sobre el tema.'],
-        ['DATO · «El agua hierve a 100 °C»','Se comprueba en un minuto. Después no queda nada que indagar.'],
-        ['PÓSTER · «Los recursos naturales son importantes»','Suena bien, pero es una opinión o un consejo. Nadie la discute y nadie la indaga. Era la idea central de la Unidad del Año.'],
-        ['VIAJA · «Las decisiones sobre los recursos naturales cambian la vida de las comunidades»','Dice una relación entre dos cosas, vale en otros lugares y épocas, y se puede investigar por muchos caminos.']]},
- {ph:'Pruébalo',k:'travel',h:'El viaje de una idea'},
+ {ph:'Aprende',k:'learn',h:'Repaso: las cuatro columnas de la aduana',
+  body:'En la aduana clasificaron frases en cuatro columnas. Abajo hay un ejemplo de cada columna, todos sobre la Unidad del Año. Toquen cada ejemplo para leer por qué está en esa columna.',
+  taps:[['Tema: «Los recursos naturales»','Un tema solo nombra el asunto de la unidad. No afirma nada sobre él. Por eso no hay nada que comprobar ni que investigar.'],
+        ['Dato: «El agua hierve a 100 °C»','Un dato es un hecho que se comprueba una vez. Después de comprobarlo, no queda nada que investigar durante seis semanas.'],
+        ['Frase de póster: «Los recursos naturales son importantes»','Una frase de póster es una opinión o un consejo. Todos están de acuerdo y nadie necesita investigarla. Esta era la idea central de la Unidad del Año.'],
+        ['Idea que viaja: «Las decisiones sobre los recursos naturales cambian la vida de las comunidades»','Afirma una relación entre dos cosas (las decisiones y la vida de las comunidades). Es verdad en muchos lugares y épocas. Y se puede investigar de muchas maneras.']]},
+ {ph:'Pruébalo',k:'travel',h:'Prueba: ¿la frase funciona en otros contextos?'},
  {ph:'Aprende',k:'learn',h:'¿Qué hace viajar a una idea?',
   body:'<div class="ctx">Las <b>decisiones sobre los recursos naturales</b> <u>cambian</u> la <b>vida de las comunidades</b>.</div>Dos conceptos en negrita. Un verbo que los une, subrayado. Sin lugares, fechas ni nombres propios.',
   taps:[['¿Por qué importa el verbo?','El verbo dice la relación: cambian, dependen de, responden a, conectan. Sin ese verbo solo hay un tema o un adjetivo.'],
@@ -281,13 +281,17 @@ var STU=[{n:'Diego',d:'Comprende el tema a fondo. Lee inglés despacio.',ok:func
  {n:'Mateo',d:'Aprende investigando. Si ese día está enfermo o nervioso, nadie ve lo que sabe.',ok:function(c){return c.when}}];
 
 /* ---------- travel data ---------- */
-var DEST=['🏜️ Un pueblo del Sahara, hoy','🛶 Tenochtitlan, 1500','🇳🇴 Una escuela en Noruega, hoy'];
+var DEST=['🏜️ Un pueblo en el desierto del Sahara, hoy','🛶 Tenochtitlan, en el año 1500','🇳🇴 Una ciudad de Noruega, hoy'];
 var TRIP=[
- {s:'Los recursos naturales',lab:'Tema',L:[0,1,0],r:[['n','Llega… y no dice nada. ¿Qué pasa con ellos?'],['n','Llega… y no dice nada.'],['n','Llega… y no dice nada.']]},
- {s:'El agua hierve a 100 °C',lab:'Dato',L:[0,0,0],r:[['n','Verdad. Y ahí termina la conversación.'],['x','¡Falla! A 2,240 metros de altura el agua hierve a unos 92 °C. Además: nada que indagar.'],['n','Verdad. Fin de la conversación.']]},
- {s:'Los recursos naturales son importantes',lab:'Póster',L:[0,1,0],r:[['n','Todos asienten. Nadie aprende nada nuevo.'],['n','Llega como consejo. ¿Importantes para quién? ¿Por qué?'],['n','Verdad… y vacía. No dice qué investigar.']]},
- {s:'Las decisiones sobre los recursos naturales cambian la vida de las comunidades',lab:'Viaja',L:[1,1,1],r:[['y','¿Quién decide quién usa el pozo? De esa decisión depende quién se queda y quién se va.'],['y','Los mexicas construyeron un gran dique para separar el agua dulce de la salada. Esa decisión protegió la ciudad.'],['y','Noruega decidió guardar el dinero del petróleo en un fondo para el futuro. Esa decisión cambió escuelas, hospitales y pensiones.']]}];
-var LNAMES=['Relación','Viaja','Se indaga'];
+ {s:'Los recursos naturales',lab:'Tema',L:[0,1,0],v:'Resultado: es un TEMA. Se puede usar en cualquier lugar, pero no afirma nada. No hay nada que investigar.',
+  r:[['n','La frase no dice nada sobre el agua ni sobre los pozos del pueblo. Solo nombra el asunto.'],['n','La frase no dice nada sobre cómo usaban el agua del lago. Solo nombra el asunto.'],['n','La frase no dice nada sobre el petróleo de Noruega. Solo nombra el asunto.']]},
+ {s:'El agua hierve a 100 °C',lab:'Dato',L:[0,0,0],v:'Resultado: es un DATO. Se comprueba una vez y ahí termina. Además, no siempre es verdad.',
+  r:[['n','Es verdad. Pero se comprueba en un minuto y no queda nada que investigar.'],['x','No es verdad. Tenochtitlan está a 2,240 metros de altura y ahí el agua hierve a unos 92 °C.'],['n','Es verdad. Pero se comprueba en un minuto y no queda nada que investigar.']]},
+ {s:'Los recursos naturales son importantes',lab:'Póster',L:[0,1,0],v:'Resultado: es una FRASE DE PÓSTER. Todos están de acuerdo, pero no dice qué investigar.',
+  r:[['n','Todos están de acuerdo. Pero no explica qué pasa con el agua del pueblo ni por qué.'],['n','Todos están de acuerdo. Pero no explica cómo vivían los mexicas con el agua del lago.'],['n','Todos están de acuerdo. Pero no explica qué cambió en Noruega con el petróleo.']]},
+ {s:'Las decisiones sobre los recursos naturales cambian la vida de las comunidades',lab:'Viaja',L:[1,1,1],v:'Resultado: es una IDEA QUE VIAJA. Es verdad en los tres contextos y en cada uno abre algo nuevo que investigar.',
+  r:[['y','Sí funciona. Quien decide cómo se usa un pozo decide quién puede quedarse a vivir en el pueblo.'],['y','Sí funciona. Los mexicas decidieron construir un dique para separar el agua dulce de la salada. Esa decisión protegió la ciudad.'],['y','Sí funciona. Noruega decidió ahorrar el dinero del petróleo en un fondo. Esa decisión pagó escuelas, hospitales y pensiones.']]}];
+var LNAMES=['Afirma una relación','Vale en otros contextos','Se puede investigar'];
 
 /* ---------- tiles data ---------- */
 var TILES=[['Los inventos','s'],['Las personas','s'],['cambian','v'],['responden a','v'],['son','c'],['la forma en que vivimos','o'],['las necesidades de las personas','o'],['el teléfono de 2007','o',1],['muy importantes','j'],['y','c']];
@@ -385,17 +389,17 @@ function simSet(k,v){var c=X('acceso').sim;c[k]=v;if(k=='q'&&v==1)c.trapped=1;sv
 /* travel */
 function travelH(m){
  var x=X('significado');x.trips=x.trips||[];
- var h='<p>Elijan una frase y mándenla de viaje a tres lugares y épocas. Vean qué le pasa. Prueben las cuatro.</p><div class="chips" style="flex-direction:column">';
- TRIP.forEach(function(t,k){h+='<button class="chip'+(x.last==k?' sel':'')+'" onclick="trip('+k+')">✈️ «'+t.s+'»</button>'});
- h+='</div><div id="tripout"></div><div class="small">Viajes hechos: '+x.trips.length+' de 4 '+x.trips.map(function(k){return '<span class="sent-chip">'+TRIP[k].lab+'</span>'}).join('')+'</div>';
- if(x.trips.length==4)h+='<div class="alert good">Solo una frase hizo el viaje completo. La idea central de la Unidad del Año se quedó en la aduana.</div>';
+ var h='<p>Una idea central debe servir en muchos lugares y épocas, no solo en un caso. Vamos a probar las cuatro frases del repaso.</p><p><b>1.</b> Toquen una frase. <b>2.</b> El tablero la aplica a tres contextos distintos y les muestra el resultado. <b>3.</b> Repitan con las cuatro frases.</p><div class="chips" style="flex-direction:column">';
+ TRIP.forEach(function(t,k){h+='<button class="chip'+(x.last==k?' sel':'')+'" onclick="trip('+k+')">Probar: «'+t.s+'»</button>'});
+ h+='</div><div id="tripout"></div><div class="small">Frases probadas: '+x.trips.length+' de 4 '+x.trips.map(function(k){return '<span class="sent-chip">'+TRIP[k].lab+'</span>'}).join('')+'</div>';
+ if(x.trips.length==4)h+='<div class="alert good">Solo una frase funcionó en los tres contextos: la idea que viaja. La idea central de la Unidad del Año («Los recursos naturales son importantes») no pasó la prueba.</div>';
  return h;
 }
 function trip(k){var x=X('significado');x.last=k;if(x.trips.indexOf(k)<0)x.trips.push(k);sv();var m=mod('significado');document.getElementById('stepbody').innerHTML=travelH(m);showTrip(k)}
 function showTrip(k,instant){var t=TRIP[k],o=document.getElementById('tripout');if(!o)return;
- o.innerHTML='<div class="lights">'+LNAMES.map(function(n,j){return '<span id="lt'+j+'">'+n+'</span>'}).join('')+'</div><div class="dest">'+DEST.map(function(d,j){return '<div class="dc '+t.r[j][0]+'" id="dc'+j+'"><b>'+d+'</b><p>'+t.r[j][1]+'</p></div>'}).join('')+'</div>';
+ o.innerHTML='<div class="lights">'+LNAMES.map(function(n,j){return '<span id="lt'+j+'">'+n+'</span>'}).join('')+'</div><div class="dest">'+DEST.map(function(d,j){return '<div class="dc '+t.r[j][0]+'" id="dc'+j+'"><b>'+d+'</b><p>'+t.r[j][1]+'</p></div>'}).join('')+'</div><div class="alert '+(k==3?'good':'bad')+'" id="verdict" style="opacity:0;transition:opacity .4s">'+t.v+'</div>';
  [0,1,2].forEach(function(j){setTimeout(function(){var e=document.getElementById('dc'+j);if(e)e.classList.add('in')},instant?0:350+j*650)});
- setTimeout(function(){t.L.forEach(function(v,j){var e=document.getElementById('lt'+j);if(e&&v)e.classList.add('on')})},instant?0:2400);}
+ setTimeout(function(){t.L.forEach(function(v,j){var e=document.getElementById('lt'+j);if(e&&v)e.classList.add('on')});var vd=document.getElementById('verdict');if(vd)vd.style.opacity=1},instant?0:2400);}
 /* tiles */
 function tileEval(seq){
  var types=seq.map(function(i){return TILES[i][1]}),rel=false;
@@ -526,7 +530,7 @@ function items(id){var m=mod(id),it=[],x=X(id);
  if(id=='acceso'){var c=x.sim||{};it.push({q:'Simulador · configuración final',a:SW.map(function(s){return s.lb+': '+s.o[c[s.k]||0]}).join(' · ')});
   it.push({q:'Simulador · resultado',a:(c.green||0)+' de 4 alumnos en verde'+(c.trapped?'. Probaron bajar la meta y el simulador los detuvo.':'.')});
   it=it.concat(retoItems(m));it.push({q:'Con sus palabras: quitar una barrera vs. bajar la meta',a:S.a.a_line||'—'});if(S.a.a_real)it.push({q:'Un alumno real',a:S.a.a_real})}
- if(id=='significado'){it.push({q:'Viajes hechos',a:(x.trips||[]).map(function(k){return TRIP[k].lab}).join(', ')||'—'});
+ if(id=='significado'){it.push({q:'Frases probadas en otros contextos',a:(x.trips||[]).map(function(k){return TRIP[k].lab}).join(', ')||'—'});
   it.push({q:'Taller de piezas · frase admitida',a:x.tileok||('No llegaron a una frase admitida. Última frase: '+(x.tilelast||'—'))});
   it=it.concat(retoItems(m));it.push({q:'Con sus palabras: idea que viaja vs. frase de póster',a:S.a.b_line||'—'})}
  if(id=='evidencia'){it.push({q:'La lupa sobre Bruno',a:x.check?(x.hlscore||0)+' de 3 palabras de conexión encontradas':'No revisado'});

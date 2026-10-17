@@ -337,6 +337,9 @@ d3:[
   f:[{k:'h3',t:'t',q:'Decisión prioritaria'},{k:'h4',t:'t',q:'Primera acción'},{k:'h5',t:'x',q:'Responsable'},{k:'h6',t:'x',q:'Fecha'},{k:'h7',t:'t',q:'Evidencia que revisaremos'}],
   ej:'Decisión: probar la línea 2 con 3.º B. · Primera acción: la provocación de la canasta. · Responsables: Ana y Luis. · Fecha: antes del 15 de noviembre. · Evidencia: tres cuadernos de alumnos distintos.'},
  {ph:'Revisen',k:'review',h:'Revisen y envíen'}
+]},
+{id:'completo',tag:'DÍA 3 · PLANIFICADOR',title:'Planificador completo',steps:[
+ {ph:'Revisen',k:'full',h:'Su planificador completo'}
 ]}]};
 
 /* ---------- simulator data ---------- */
@@ -412,7 +415,7 @@ function card(m){
 function step(id,d){var m=mod(id);S.st[id]=Math.max(0,Math.min(m.steps.length-1,(S.st[id]||0)+d));sv();render();var c=document.getElementById('c_'+id);if(c)c.scrollIntoView({behavior:'smooth',block:'start'})}
 function openMod(id){S.cur[S.day]=id;sv();render()}
 function stepHTML(m,st,i){
- var f={learn:learnH,choice:retoH,reto:retoH,sim:simH,travel:travelH,tiles:tilesH,hl:hlH,branch:branchH,siobs:siobsH,take:takeH,form:formH,review:reviewH}[st.k];
+ var f={full:fullH,learn:learnH,choice:retoH,reto:retoH,sim:simH,travel:travelH,tiles:tilesH,hl:hlH,branch:branchH,siobs:siobsH,take:takeH,form:formH,review:reviewH}[st.k];
  return f(m,st,i);
 }
 /* learn */
@@ -587,6 +590,23 @@ function ideaHelp(){var x=X('ib');var t=S.a.e2;var mods=(IDEAS[t]||[]).map(funct
 function ibText(){var x=X('ib');var t=[x.a,x.v,x.b].filter(Boolean).join(' ').trim();return t?t.charAt(0).toUpperCase()+t.slice(1).replace(/\.?$/,'.'):''}
 function ibSet(k,v){X('ib')[k]=v;sv();var e=document.getElementById('ib_prev');if(e)e.textContent=ibText()}
 function useIdea(t){if(!t)return;S.a.e3=t;X('ib').open=1;sv();var m=mod('nucleo');document.getElementById('stepbody').innerHTML=stepHTML(m,m.steps[S.st.nucleo||0],S.st.nucleo||0)}
+var PLAN=[['DATOS DE LA UNIDAD',[['Unidad','e1'],['Grado y edad','e1g'],['Cronograma','e1t'],['Ruta','e1r']]],
+['1 · CONTEXTO, PROPÓSITO Y CONEXIONES',[['Tema transdisciplinario','e2'],['Contexto local y global','ctx1'],['Identidades, lenguas e intereses','ctx2'],['Conexiones con aprendizajes anteriores y futuros','ctx3'],['Justificación','ctx4']]],
+['2 · NÚCLEO CONCEPTUAL',[['Idea central','e3'],['Aduana','e3k'],['Comprensión transferible','e3u'],['Conceptos clave','e4'],['Conceptos relacionados','e4r'],['Otros conceptos relacionados','e4ro'],['Línea de indagación 1','e5'],['Línea de indagación 2','e6'],['Línea de indagación 3','e7'],['Línea de indagación 4','e7b'],['Preguntas del personal docente','qd'],['Preguntas posibles del alumnado','qa']]],
+['3 · OBJETIVOS Y CRITERIOS DE LOGRO',[['Objetivos de aprendizaje','ob1'],['Criterios de logro','ob2'],['Evidencia convincente de comprensión','ob3']]],
+['4 · PERFIL Y ENFOQUES DEL APRENDIZAJE',[['Atributos del perfil','e9'],['Habilidades ATL','atl'],['Cómo se enseñan y se hacen visibles','atl2']]],
+['5 · EXPERIENCIAS DE APRENDIZAJE Y AGENCIA',[['Provocación inicial','x1'],['Tipo de indagación','e8'],['Oportunidades para indagar','x2'],['Conexiones transdisciplinarias','x3'],['Tiempo, agrupamiento, espacios y recursos','x4'],['Voz','g1'],['Elección','g1b'],['Responsabilidad sobre el aprendizaje','g1c']]],
+['6 · EVALUACIÓN Y EVIDENCIAS',[['Evidencias iniciales','ev1'],['Evaluación formativa','g2'],['Retroalimentación y autoevaluación','ev3'],['Evaluación final','ev5'],['Documentación del proceso','ev6'],['Comprobación de alineación','ev7']]],
+['7 · IDENTIDAD, LENGUA Y BARRERAS',[['Barreras','g3'],['Opciones de acceso y expresión','ac2'],['Desafío que se mantiene','ac3'],['Identidades, culturas y lenguas','ac4']]],
+['8 · ACCIÓN',[['Oportunidades de acción','a8'],['Aliados de la comunidad','a8b']]],
+['9 · COLABORACIÓN Y RECURSOS',[['Funciones del equipo y especialistas','c9'],['Recursos','c9b']]],
+['10 · REFLEXIÓN',[['Pregunta de la audiencia','h1'],['Lo que cambiaron','h2'],['Evidencia que les haría cambiar el plan','r1']]],
+['COMPROBACIÓN CON CINCO LENTES',[['Lentes que ya cumple','lentes']]],
+['COMPROMISO DE 30 DÍAS',[['Decisión prioritaria','h3'],['Primera acción','h4'],['Responsable','h5'],['Fecha','h6'],['Evidencia que revisaremos','h7']]]];
+function planItems(){return PLAN.map(function(sec){return {q:sec[0],a:sec[1].map(function(f){var v=aval(f[1]);return f[0]+': '+(v||'—')}).join('\n\n')}})}
+function fullH(m){var h='<p>Todo lo que escribieron en el Día 3, ordenado como la plantilla de planificación. Revísenlo y envíenlo: llega como <b>un solo PDF</b> a la carpeta del equipo.</p>';
+ PLAN.forEach(function(sec){h+='<div class="item"><div class="tag">'+sec[0]+'</div>'+sec[1].map(function(f){var v=aval(f[1]);return '<div style="margin-top:6px"><div class="meta">'+f[0]+'</div><div style="font-size:15px;font-weight:600">'+(v?esc(v):'<span style="color:var(--grey)">—</span>')+'</div></div>'}).join('')+'</div>'});
+ return h+sendBtn(m.id)}
 function lineWarn(v){v=(v||'').trim();if(!v)return '';if(/\?\s*$/.test(v)||/^¿/.test(v))return 'Escríbanla como enunciado, no como pregunta.';if(/^(hacer|elaborar|realizar|dibujar|visitar|crear|investigar|leer|escribir|presentar)\b/i.test(v))return 'Eso suena a actividad. Una línea dice qué se va a comprender.';return ''}
 function field(f){
  var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>'+(f.hint?'<div class="hint">'+f.hint+'</div>':'');
@@ -630,6 +650,7 @@ function items(id){var m=mod(id),it=[],x=X(id);
   it.push({q:'Preguntas que le hicieron a Camila (en orden)',a:(x.br||[]).map(function(k){return BR[k].q}).join(' → ')||'—'});
   SO.forEach(function(s,i){it.push({q:'Si observamos… · '+s.n,a:(x.so&&x.so[i]!=null)?soSentence(i)+((x.sof&&x.sof[i])?' (primer intento)':' (después de corregir)'):'Sin terminar'})});
   it=it.concat(retoItems(m));it.push({q:'Con sus palabras: qué preguntarle a un alumno que suena a póster',a:S.a.c_line||'—'})}
+ if(id=='completo')return planItems();
  if(MODS.d3.indexOf(m)>-1)allFields(m).forEach(function(f){it.push({q:f.q,a:val(f)||'—'})});
  return it}
 function send(id,btn){
@@ -638,7 +659,7 @@ function send(id,btn){
  if(line&&!S.a[line]&&!confirm('Falta su frase. ¿Enviar de todos modos?'))return;
  if(!line){var empty=allFields(m).filter(function(f){return !f.opc&&!val(f)});if(empty.length&&!confirm('Faltan '+empty.length+' respuesta(s). ¿Enviar de todos modos?'))return}
  btn.disabled=true;st.className='status';st.textContent='Enviando…';
- var body=JSON.stringify({team:S.team,title:m.tag+' · '+m.title,items:items(id)});
+ var body=JSON.stringify({team:S.team,title:(id=='completo'?'Planificador de la unidad · '+(aval('e1')||'sin título'):m.tag+' · '+m.title),items:items(id)});
  var done=false,timer=setTimeout(function(){if(!done){done=true;fail()}},25000);
  function ok(){var t=new Date();S.sent[id]=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);sv();btn.disabled=false;st.className='status ok';st.textContent='✓ Evidencia enviada a la carpeta del equipo '+S.team+'.';document.getElementById('c_'+id).classList.add('sent')}
  function fail(){btn.disabled=false;st.className='status bad';st.innerHTML='No se pudo enviar. Revisen el wifi y toquen otra vez. <a href="javascript:printSec(\''+id+'\')">Descargar copia en PDF</a>'}

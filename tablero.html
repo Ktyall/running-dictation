@@ -161,6 +161,21 @@ function X(id){S.x[id]=S.x[id]||{};return S.x[id]}
 var CONCEPTS=[['Forma','¿Cómo es?'],['Función','¿Cómo funciona?'],['Causa','¿Por qué es así?'],['Cambio','¿Cómo cambia?'],['Conexión','¿Cómo se conecta con otras cosas?'],['Perspectiva','¿Cuáles son los puntos de vista?'],['Responsabilidad','¿Cuál es nuestra responsabilidad?']];
 var THEMES=['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo nos organizamos','Cómo compartimos el planeta'];
 var TDESC={'Quiénes somos':'Identidad: salud y bienestar; relaciones y pertenencia; aprendizaje y desarrollo.','Dónde nos encontramos en el tiempo y el espacio':'Épocas y acontecimientos; comunidades, patrimonio y cultura; movimiento, adaptación y transformación.','Cómo nos expresamos':'Inspiración, imaginación y creatividad; prácticas de comunicación; interpretaciones y respuestas.','Cómo funciona el mundo':'Patrones, ciclos y sistemas; prácticas, métodos y herramientas; descubrimiento, diseño e innovación.','Cómo nos organizamos':'Sistemas sociales y ecológicos; formas de sustento y comercio; representación, colaboración y toma de decisiones.','Cómo compartimos el planeta':'Derechos, responsabilidades y dignidad de los seres vivos; futuros justos y pacíficos; naturaleza y coexistencia.'};
+var IDEAS={'Quiénes somos':['Las relaciones que construimos influyen en nuestro bienestar.','Las personas cambian a lo largo de su vida y aprenden de esos cambios.'],
+'Dónde nos encontramos en el tiempo y el espacio':['Las comunidades se transforman cuando las personas se desplazan.','Los objetos del pasado muestran cómo vivían las personas.'],
+'Cómo nos expresamos':['Las personas usan el arte para expresar ideas y sentimientos.','Los mensajes cambian según el público al que se dirigen.'],
+'Cómo funciona el mundo':['Los seres vivos dependen de los ciclos de la naturaleza.','Las fuerzas afectan el movimiento de los objetos.'],
+'Cómo nos organizamos':['Los mercados conectan a quienes producen con quienes consumen.','Las comunidades crean reglas para convivir y tomar decisiones.'],
+'Cómo compartimos el planeta':['Las decisiones sobre los recursos naturales cambian la vida de las comunidades.','Los seres vivos se adaptan a los cambios de su entorno.']};
+var VERBS=['cambian','dependen de','influyen en','se adaptan a','conectan','responden a','transforman','crean','organizan','expresan','muestran','afectan'];
+var SUBJ=['Las personas','Las comunidades','Los seres vivos','Las decisiones','Los mensajes','Los mercados','Las culturas','Los sistemas'];
+var RCON=[['Ciencias',['adaptación','ciclo','ecosistema','energía','erosión','fuerza','hábitat','materia','sistema','transformación']],
+['Ciencias sociales',['comercio','comunidad','cultura','derechos','gobierno','identidad','interdependencia','migración','patrimonio','recursos']],
+['Lengua',['audiencia','estructura','mensaje','persuasión','propósito','punto de vista']],
+['Matemáticas',['datos','equivalencia','medida','patrón','probabilidad','espacio']],
+['Artes',['composición','estilo','expresión','interpretación','ritmo']],
+['Educación personal, social y física',['bienestar','colaboración','relaciones','resiliencia','salud']]];
+var LSTART=[['Forma','Las características de'],['Función','Cómo funciona'],['Causa','Las causas de'],['Cambio','Cómo ha cambiado'],['Conexión','La relación entre'],['Perspectiva','Distintos puntos de vista sobre'],['Responsabilidad','Nuestra responsabilidad en']];
 var PROFILE=['Indagadores','Informados e instruidos','Pensadores','Buenos comunicadores','Íntegros','De mentalidad abierta','Solidarios','Audaces','Equilibrados','Reflexivos'];
 
 /* ======================= DÍA 2 ======================= */
@@ -252,17 +267,17 @@ d3:[
      {k:'ctx4',t:'t',q:'Justificación: ¿por qué esta indagación merece tiempo ahora?'}],
   ej:'Tema: Cómo nos organizamos · Contexto: el tianguis de la colonia y las compras en línea que hacen sus familias · Justificación: el alumnado compra y vende todos los días, pero no sabe cómo se conectan las personas que producen y las que compran.'},
  {ph:'Construyan',k:'form',h:'2 · Idea central',ref:'Día 2 · Una idea que viaja, y laboratorio, estación 4.',guide:'significado',
-  f:[{k:'e3',t:'t',q:'Idea central',lights:1,hint:'Una oración que afirma una relación entre conceptos y es verdad en otros lugares y épocas.'},
+  f:[{k:'e3',t:'t',q:'Idea central',lights:1,build:1,hint:'Una oración que afirma una relación entre conceptos y es verdad en otros lugares y épocas.'},
      {k:'e3k',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Afirma una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']},
      {k:'e3u',t:'t',q:'¿Qué comprensión transferible queremos que se lleven?',opc:1}],
   ej:'«Los mercados conectan a quienes producen con quienes consumen.» · Comprensión transferible: un intercambio funciona cuando las dos partes obtienen algo que necesitan.'},
  {ph:'Construyan',k:'form',h:'2 · Conceptos',ref:'Laboratorio, estación 3. Cada concepto clave trae su pregunta.',
   f:[{k:'e4',t:'cq',q:'Conceptos clave (elijan dos o tres)',o:CONCEPTS},
-     {k:'e4r',t:'x',q:'Conceptos relacionados',hint:'Conceptos propios de una disciplina que dan profundidad. Ejemplo: intercambio, oferta, demanda.'}],
+     {k:'e4r',t:'rc',q:'Conceptos relacionados (elijan de la lista o escriban otros)',hint:'Conceptos propios de una disciplina que dan profundidad. Elijan dos o tres.'},{k:'e4ro',t:'x',q:'Otros conceptos relacionados',opc:1}],
   ej:'Conceptos clave: Función, Conexión, Cambio · Relacionados: intercambio, oferta y demanda, transporte'},
  {ph:'Construyan',k:'form',h:'2 · Líneas de indagación y preguntas',ref:'Laboratorio, estación 4: enunciados, no preguntas ni actividades.',
   f:[{k:'e5',t:'x',q:'Línea de indagación 1',line:1},{k:'e6',t:'x',q:'Línea de indagación 2',line:1},{k:'e7',t:'x',q:'Línea de indagación 3',line:1},{k:'e7b',t:'x',q:'Línea de indagación 4',line:1,opc:1},
-     {k:'qd',t:'t',q:'Preguntas iniciales del personal docente',hint:'Preguntas para provocar y guiar. Ejemplo: ¿De dónde viene lo que compramos?'},
+     {k:'qd',t:'t',q:'Preguntas iniciales del personal docente',hint:'Usen la pregunta de cada concepto como punto de partida: Forma ¿cómo es…? · Función ¿cómo funciona…? · Causa ¿por qué…? · Cambio ¿cómo ha cambiado…? · Conexión ¿cómo se relaciona… con…? · Perspectiva ¿qué piensan otros de…? · Responsabilidad ¿qué podemos hacer…?'},
      {k:'qa',t:'t',q:'Preguntas, teorías o curiosidades posibles del alumnado',opc:1}],
   ej:'1. Cómo funciona un mercado (función). 2. Cómo se conectan quienes producen y quienes compran (conexión). 3. Cómo cambian los mercados con el tiempo (cambio). · Pregunta docente: ¿Qué tendría que pasar para que una fruta de Michoacán llegue a tu mesa?'},
  {ph:'Construyan',k:'form',h:'3 · Objetivos y criterios de logro',ref:'Día 2 · Tres cuadernos: la comprensión se ve en las conexiones, no en la cantidad de datos.',guide:'evidencia',
@@ -553,18 +568,34 @@ function formH(m,st,i){
  if(st.guide)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Recordar la tarjeta del Día 2</button><div class="rev hide" style="background:none;padding:0;border:0">'+takeCard(st.guide)+'</div>';
  return h;
 }
-var SUMK=[['UNIDAD','e1'],['GRADO','e1g'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS CLAVE','e4'],['CONCEPTOS RELACIONADOS','e4r'],['LÍNEAS DE INDAGACIÓN',['e5','e6','e7','e7b']],['OBJETIVOS','ob1'],['PERFIL','e9'],['ATL','atl'],['TIPO DE INDAGACIÓN','e8'],['EVALUACIÓN FINAL','ev5'],['AGENCIA · ELECCIÓN','g1b'],['SI OBSERVAMOS…','g2']];
+var SUMK=[['UNIDAD','e1'],['GRADO','e1g'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS CLAVE','e4'],['CONCEPTOS RELACIONADOS','e4r'],['OTROS RELACIONADOS','e4ro'],['LÍNEAS DE INDAGACIÓN',['e5','e6','e7','e7b']],['OBJETIVOS','ob1'],['PERFIL','e9'],['ATL','atl'],['TIPO DE INDAGACIÓN','e8'],['EVALUACIÓN FINAL','ev5'],['AGENCIA · ELECCIÓN','g1b'],['SI OBSERVAMOS…','g2']];
 function aval(k){var v=S.a[k];return Array.isArray(v)?v.join(', '):(v||'')}
 function summary(){var rows='';SUMK.forEach(function(p){var v=Array.isArray(p[1])?p[1].map(aval).filter(Boolean).map(function(x,j){return (j+1)+'. '+x}).join('<br>'):esc(aval(p[1]));if(Array.isArray(p[1]))v=p[1].map(aval).filter(Boolean).map(function(x,j){return (j+1)+'. '+esc(x)}).join('<br>');if(v)rows+='<dt>'+p[0]+'</dt><dd>'+v+'</dd>'});
  if(!rows)return '';return '<details class="sum"'+(S.sumClosed?'':' open')+' ontoggle="S.sumClosed=!this.open;sv()"><summary>📋 Su unidad hasta ahora</summary><dl>'+rows+'</dl></details>'}
+function togRC(k,o,btn){var a=S.a[k]||[];var j=a.indexOf(o);if(j>-1)a.splice(j,1);else a.push(o);S.a[k]=a;sv();btn.classList.toggle('sel')}
+function lineStarter(k){var cs=S.a.e4||[];var L=LSTART.filter(function(x){return cs.indexOf(x[0])>-1}).concat(LSTART.filter(function(x){return cs.indexOf(x[0])<0}));
+ return '<select style="margin-bottom:6px;font-size:14px" onchange="useStart(\''+k+'\',this.value)"><option value="">Ayuda: empezar con…</option>'+L.map(function(x){return '<option value="'+x[1]+'">'+x[0]+': '+x[1]+'…</option>'}).join('')+'</select>'}
+function useStart(k,v){if(!v)return;var e=document.getElementById('in_'+k);var cur=(S.a[k]||'').trim();var nv=v+' '+(cur&&cur.indexOf(v)!==0?cur:'');S.a[k]=nv;sv();if(e){e.value=nv;e.focus();var w=document.getElementById('lw_'+k);if(w)w.textContent=lineWarn(nv)}}
+function ideaHelp(){var x=X('ib');var t=S.a.e2;var mods=(IDEAS[t]||[]).map(function(m){return '<button class="chip" style="text-align:left" onclick="useIdea(this.textContent)">'+m+'</button>'}).join('');
+ return '<details class="sum" style="background:#f7f1ff;border-color:#d9c6f0"'+(x.open?' open':'')+' ontoggle="X(\'ib\').open=this.open;sv()"><summary>🧩 Ayuda para armarla (opcional)</summary>'
+ +(t?'<p class="hint" style="margin-top:8px"><b>Modelos para '+esc(t)+'.</b> Toquen uno para usarlo como punto de partida y adáptenlo a su unidad:</p><div class="chips" style="flex-direction:column">'+mods+'</div>':'<p class="hint">Elijan antes el tema transdisciplinario (paso anterior) para ver modelos.</p>')
+ +'<p class="hint" style="margin-top:10px"><b>O ármenla por partes:</b> ¿quién o qué? + verbo que une + ¿con qué?</p>'
+ +'<input type="text" id="ib_a" list="ib_al" placeholder="¿Quién o qué? Ej.: Las comunidades" value="'+esc(x.a)+'" oninput="ibSet(\'a\',this.value)"><datalist id="ib_al">'+SUBJ.map(function(o){return '<option value="'+o+'">'}).join('')+'</datalist>'
+ +'<select style="margin:6px 0" onchange="ibSet(\'v\',this.value)"><option value="">Verbo que une…</option>'+VERBS.map(function(o){return '<option'+(x.v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select>'
+ +'<input type="text" placeholder="¿Con qué? Ej.: el lugar donde viven" value="'+esc(x.b)+'" oninput="ibSet(\'b\',this.value)">'
+ +'<div class="build" id="ib_prev" style="font-size:15px;margin-top:8px">'+ibText()+'</div><button class="btn" style="margin-top:4px" onclick="useIdea(ibText())">Usar esta frase</button></details>'}
+function ibText(){var x=X('ib');var t=[x.a,x.v,x.b].filter(Boolean).join(' ').trim();return t?t.charAt(0).toUpperCase()+t.slice(1).replace(/\.?$/,'.'):''}
+function ibSet(k,v){X('ib')[k]=v;sv();var e=document.getElementById('ib_prev');if(e)e.textContent=ibText()}
+function useIdea(t){if(!t)return;S.a.e3=t;X('ib').open=1;sv();var m=mod('nucleo');document.getElementById('stepbody').innerHTML=stepHTML(m,m.steps[S.st.nucleo||0],S.st.nucleo||0)}
 function lineWarn(v){v=(v||'').trim();if(!v)return '';if(/\?\s*$/.test(v)||/^¿/.test(v))return 'Escríbanla como enunciado, no como pregunta.';if(/^(hacer|elaborar|realizar|dibujar|visitar|crear|investigar|leer|escribir|presentar)\b/i.test(v))return 'Eso suena a actividad. Una línea dice qué se va a comprender.';return ''}
 function field(f){
  var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>'+(f.hint?'<div class="hint">'+f.hint+'</div>':'');
- if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value'+(f.lights?',1':'')+')">'+esc(v)+'</textarea>'+(f.lights?'<div id="lights_'+f.k+'">'+lightsHTML(f.k)+'</div>':'')+'</div>';
- if(f.t=='x')return '<div class="f">'+lab+'<input type="text" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value'+(f.line?',2':'')+')">'+(f.line?'<div class="warn" id="lw_'+f.k+'">'+lineWarn(v)+'</div>':'')+'</div>';
+ if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value'+(f.lights?',1':'')+')">'+esc(v)+'</textarea>'+(f.lights?'<div id="lights_'+f.k+'">'+lightsHTML(f.k)+'</div>':'')+(f.build?ideaHelp():'')+'</div>';
+ if(f.t=='x')return '<div class="f">'+lab+(f.line?lineStarter(f.k):'')+'<input type="text" id="in_'+f.k+'" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value'+(f.line?',2':'')+')">'+(f.line?'<div class="warn" id="lw_'+f.k+'">'+lineWarn(v)+'</div>':'')+'</div>';
  if(f.t=='s')return '<div class="f">'+lab+'<select onchange="setv(\''+f.k+'\',this.value'+(f.desc?',3':'')+')"><option value="">Elijan…</option>'+f.o.map(function(o){return '<option'+(v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select>'+(f.desc?'<div class="hint" id="td_'+f.k+'" style="margin-top:6px">'+(TDESC[v]||'')+'</div>':'')+'</div>';
  if(f.t=='c'||f.t=='cq'||f.t=='cq1'){var a=v||[];if(f.t=='cq1'&&!Array.isArray(a))a=[a];
   return '<div class="f">'+lab+'<div class="chips">'+f.o.map(function(o,i){var n=Array.isArray(o)?o[0]:o,sub=Array.isArray(o)?'<small>'+o[1]+'</small>':'';return '<button class="chip'+(a.indexOf(n)>-1?' sel':'')+'" onclick="tog(\''+f.k+'\','+i+',this)">'+n+sub+'</button>'}).join('')+'</div></div>'}
+ if(f.t=='rc'){var a=v||[];return '<div class="f">'+lab+RCON.map(function(g){return '<div class="hint" style="margin-top:8px;font-weight:800">'+g[0]+'</div><div class="chips">'+g[1].map(function(o){return '<button class="chip'+(a.indexOf(o)>-1?' sel':'')+'" onclick="togRC(\''+f.k+'\',\''+o+'\',this)">'+o+'</button>'}).join('')+'</div>'}).join('')+'</div>'}
  if(f.t=='k'){var b=v||[];return '<div class="f">'+lab+f.o.map(function(o,i){return '<label class="chk"><input type="checkbox"'+(b.indexOf(o)>-1?' checked':'')+' onchange="tog(\''+f.k+'\','+i+')"> '+o+'</label>'}).join('')+'</div>'}
  return '';
 }

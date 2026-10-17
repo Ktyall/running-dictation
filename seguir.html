@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Para seguir indagando · IBAMEX 2026</title>
+<style>
+:root{--navy:#002b55;--blue:#004b8d;--cyan:#1ab7ea;--sky:#b5daff;--mist:#eaf7fd;--ink:#13263a;--ok:#1d8a4e;--okbg:#e5f5ec;--bad:#c8372d;--sun:#ffd25e;--line:#d3e0ea;--grey:#7a8a99}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Open Sans",Arial,Helvetica,sans-serif;background:#f4f8fb;color:var(--ink);line-height:1.5}
+header.top{background:var(--navy);color:#fff;padding:14px 20px}
+header.top b{font-size:18px}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:28px;color:var(--navy);margin:8px 0 6px}
+h2{font-size:22px;color:var(--navy);margin:0 0 6px}
+h3{font-size:15px;color:var(--blue);margin:18px 0 8px;letter-spacing:.05em;text-transform:uppercase}
+p{margin:6px 0}.lead{font-size:17px}
+.tag{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--cyan)}
+.small{font-size:13px;color:#4e5f6d}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.nav a{font-weight:800;font-size:14px;color:var(--blue);background:#fff;border:2px solid var(--sky);border-radius:20px;padding:6px 14px;text-decoration:none}
+.card{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,43,85,.08);padding:20px;margin:16px 0;border-top:5px solid var(--cyan)}
+.quote{border-left:4px solid var(--cyan);background:var(--mist);padding:10px 14px;margin:10px 0;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0}
+.grid div{background:var(--mist);border-radius:10px;padding:12px;font-size:14.5px}
+.grid b{display:block;color:var(--navy);font-size:16px;margin-bottom:2px}
+.box{border:2px solid var(--blue);border-radius:10px;padding:12px 14px;margin:12px 0;background:#fbfdff}
+.box>b:first-child{font-size:12px;letter-spacing:.12em;color:var(--blue)}
+.q{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;background:#fff}
+.q .t{font-weight:600;margin-bottom:6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1.5px solid var(--sky);background:#fff;border-radius:8px;padding:7px 11px;font:inherit;font-size:14px;cursor:pointer;color:var(--ink)}
+.opt.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.fb{font-size:14px;margin-top:6px}
+.res{background:var(--okbg);border-radius:10px;padding:12px 14px;margin-top:10px;font-weight:600}
+textarea{width:100%;font:inherit;font-size:15px;padding:10px;border:2px solid var(--sky);border-radius:10px;min-height:70px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer;font-size:15px}
+.hide{display:none}
+@media print{.nav,.btn,header.top{display:none}.card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}body{background:#fff}}
+</style></head><body>
+<header class="top"><b>IBAMEX 2026 · Para seguir indagando</b></header>
+<div class="wrap">
+<h1>Tres temas para seguir indagando</h1>
+<p class="lead">En el taller trabajamos agencia, colaboración, acceso, significado y evidencia. Estos tres temas también forman parte del taller y conviene revisarlos con su equipo antes de enseñar su unidad. Cada uno toma unos 15 minutos.</p>
+<div class="nav"><a href="#lengua">1 · La lengua</a><a href="#accion">2 · La acción y el modelo del programa</a><a href="#entornos">3 · Entornos y recursos</a></div>
+<p class="small">Resumen elaborado para el taller a partir de los principios del PEP. Para la versión oficial, consulten los documentos del IB en el sitio del taller.</p>
+
+<!-- 1 LENGUA -->
+<div class="card" id="lengua"><div class="tag">TEMA 1</div><h2>¿Cuál es el papel de la lengua?</h2>
+<p class="lead">En el PEP, la lengua no es solo una asignatura: es la herramienta con la que se piensa, se indaga y se comparte lo aprendido en todas las áreas.</p>
+<div class="grid">
+<div><b>Toda la planta docente enseña lengua</b>Quien enseña ciencias enseña también a explicar, argumentar y leer textos de ciencias.</div>
+<div><b>La lengua materna es un recurso</b>La lengua de casa sostiene la identidad y el aprendizaje. Usarla no estorba el aprendizaje de otras lenguas: lo apoya.</div>
+<div><b>Varias lenguas, un solo repertorio</b>El alumnado puede usar todo lo que sabe, en cualquier lengua, para comprender y expresar ideas.</div>
+<div><b>La lengua puede ser una barrera</b>Lo vivieron en la Prueba relámpago: si la tarea exige una lengua que no es la meta, la lengua tapa lo que el alumnado sabe.</div>
+</div>
+<h3>Autoevaluación rápida · ¿Qué tan multilingüe es nuestra práctica?</h3>
+<p class="small">Respondan pensando en su colegio. Al final verán un resumen.</p>
+<div id="lq"></div>
+<button class="btn" onclick="langResult()">Ver resumen</button>
+<div id="lr" class="res hide"></div>
+<div class="box"><b>PARA SU UNIDAD</b><p>Planificador, sección 7 (identidad, lengua y barreras): escriban una oportunidad para que el alumnado use su lengua materna y una estrategia de lengua que enseñarán en la unidad (por ejemplo, vocabulario clave con imágenes o un modelo de texto).</p></div>
+<p><b>Para conversar en equipo:</b> ¿Qué lengua exige cada tarea de nuestra unidad? ¿Es esa lengua parte de la meta o es solo el camino?</p>
+<textarea placeholder="Notas del equipo (se quedan en este dispositivo)" data-k="n1"></textarea>
+</div>
+
+<!-- 2 ACCION -->
+<div class="card" id="accion"><div class="tag">TEMA 2</div><h2>La acción del alumnado y el modelo del programa</h2>
+<p class="lead">El modelo del PEP pone al <b>alumnado en el centro</b>. A su alrededor están <b>el aprendizaje y la enseñanza</b> y <b>la comunidad de aprendizaje</b>. La acción es lo que el alumnado decide hacer con lo que aprende: es la agencia llevada al mundo.</p>
+<div class="quote">La acción no se impone ni se programa como una actividad obligatoria al final de la unidad. Surge de la indagación cuando el alumnado comprende algo y decide hacer algo al respecto.</div>
+<h3>Cinco formas de acción en el PEP</h3>
+<div class="grid">
+<div><b>Participación</b>Contribuir activamente en el grupo o la comunidad.</div>
+<div><b>Defensa de causas</b>Actuar, solo o con otros, para promover un cambio.</div>
+<div><b>Justicia social</b>Actuar por los derechos y el bienestar de otras personas.</div>
+<div><b>Emprendimiento social</b>Crear soluciones innovadoras a problemas de la comunidad.</div>
+<div><b>Estilo de vida</b>Hacer elecciones personales coherentes con lo aprendido.</div>
+</div>
+<h3>Reto · ¿Qué forma de acción es?</h3>
+<div id="aq"></div>
+<div class="box"><b>PARA SU UNIDAD</b><p>Planificador, sección 8 (acción): escriban dos acciones que <b>podrían</b> surgir de su unidad, sin imponerlas, y cómo las reconocerán si aparecen. Recuerden el Día 1: la agencia se siente cuando el alumnado decide de verdad.</p></div>
+<p><b>Para conversar en equipo:</b> ¿Cómo compartiríamos con nuestra comunidad escolar un plan para promover la acción del alumnado?</p>
+<textarea placeholder="Notas del equipo (se quedan en este dispositivo)" data-k="n2"></textarea>
+</div>
+
+<!-- 3 ENTORNOS -->
+<div class="card" id="entornos"><div class="tag">TEMA 3</div><h2>Entornos de aprendizaje y recursos</h2>
+<p class="lead">Un entorno de aprendizaje no es solo el salón. Es el espacio, el tiempo, las personas y los materiales que hacen posible la indagación.</p>
+<div class="grid">
+<div><b>Espacios</b>Dentro y fuera del aula, físicos y virtuales. Flexibles para trabajar solo, en parejas o en grupo.</div>
+<div><b>Tiempo</b>Bloques que permitan indagar a fondo, volver a las ideas y revisar.</div>
+<div><b>Personas</b>Familias, especialistas y miembros de la comunidad también son recursos.</div>
+<div><b>Materiales</b>Variados, accesibles y elegidos para la indagación, no solo para el libro de texto.</div>
+</div>
+<h3>Lista de cotejo para su unidad</h3>
+<div id="eq"></div>
+<div class="box"><b>PARA SU UNIDAD</b><p>Planificador, sección 9 (colaboración y recursos): anoten una persona de la comunidad que podría participar, un espacio fuera del aula y un recurso que todavía les falta.</p></div>
+<textarea placeholder="Notas del equipo (se quedan en este dispositivo)" data-k="n3"></textarea>
+</div>
+<p class="small">Pueden imprimir esta página o guardarla como PDF desde el menú del navegador.</p>
+</div>
+<script>
+var KEY='ibamex26-seguir';function ld(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}function sv(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}var S=ld();
+document.querySelectorAll('textarea[data-k]').forEach(function(t){t.value=S[t.dataset.k]||'';t.oninput=function(){S[t.dataset.k]=t.value;sv()}});
+var LQ=['Todo el personal docente enseña explícitamente el vocabulario y los tipos de texto de su materia.','El alumnado puede usar su lengua materna para pensar, planear o explicar.','Las lenguas de las familias se ven y se valoran en el colegio.','Las tareas ofrecen apoyos de lengua (imágenes, modelos, bancos de palabras) sin bajar la meta.','Distinguimos cuándo la lengua es la meta de una tarea y cuándo es solo el camino.','Hay una política lingüística conocida y usada por todo el personal.'];
+var LO=['Sí','A veces','Todavía no'];var la={};
+document.getElementById('lq').innerHTML=LQ.map(function(q,i){return '<div class="q"><div class="t">'+(i+1)+'. '+q+'</div><div class="opts">'+LO.map(function(o,j){return '<button class="opt" onclick="pickL('+i+','+j+',this)">'+o+'</button>'}).join('')+'</div></div>'}).join('');
+function pickL(i,j,b){la[i]=j;[].forEach.call(b.parentNode.children,function(x){x.classList.remove('sel')});b.classList.add('sel')}
+function langResult(){var n=Object.keys(la).length,s=0,low=[];for(var i in la){s+=2-la[i];if(la[i]==2)low.push(+i+1)}var r=document.getElementById('lr');r.classList.remove('hide');
+ if(n<LQ.length){r.textContent='Respondan las '+LQ.length+' afirmaciones para ver el resumen.';return}
+ r.innerHTML='Puntuación: '+s+' de '+(LQ.length*2)+'. '+(s>=9?'Una práctica bastante multilingüe. Elijan una afirmación para fortalecer.':s>=5?'Hay una buena base. Prioricen una afirmación de «Todavía no».':'Es un buen punto de partida para una conversación de colegio.')+(low.length?' Empiecen por: '+low.map(function(x){return 'n.º '+x}).join(', ')+'.':'')}
+var AQ=[['Después de estudiar el agua, un grupo escribe una carta al municipio para pedir bebederos en el parque.',1],['Un alumno decide llevar su propia botella reutilizable todos los días.',4],['El grupo diseña y vende separadores hechos con material reciclado para financiar un huerto escolar.',3],['Una alumna se suma al comité que organiza la feria de ciencias.',0],['El grupo investiga por qué algunas familias no tienen acceso a agua potable y organiza una campaña de donación.',2]];
+var AO=['Participación','Defensa de causas','Justicia social','Emprendimiento social','Estilo de vida'];
+function shuf(a,seed){a=a.slice();var x=seed;for(var j=a.length-1;j>0;j--){x=(x*9301+49297)%233280;var r=Math.floor(x/233280*(j+1));var t=a[j];a[j]=a[r];a[r]=t}return a}
+document.getElementById('aq').innerHTML=AQ.map(function(q,i){var ord=shuf([0,1,2,3,4],i*7+3);return '<div class="q"><div class="t">'+q[0]+'</div><div class="opts">'+ord.map(function(j){return '<button class="opt" onclick="pickA('+i+','+j+',this)">'+AO[j]+'</button>'}).join('')+'</div><div class="fb"></div></div>'}).join('');
+function pickA(i,j,b){var ok=j==AQ[i][1],fb=b.parentNode.nextSibling;if(ok){[].forEach.call(b.parentNode.children,function(x){x.disabled=true});b.classList.add('right');fb.textContent='✓ '+AO[j]+'.'}else{b.classList.add('wrong');fb.textContent='Todavía no. Relean las cinco formas.'}}
+var EQ=['Hay espacios para trabajar solo, en parejas y en grupo.','La unidad usa al menos un espacio fuera del aula.','Participa al menos una persona de la comunidad o una familia.','Hay tiempo para volver a las ideas y revisar, no solo para avanzar.','Los materiales se pueden usar sin depender de una sola lengua o de leer mucho.','El alumnado ayuda a decidir cómo se organiza el espacio.'];
+document.getElementById('eq').innerHTML=EQ.map(function(q,i){return '<label class="q" style="display:flex;gap:10px;align-items:flex-start"><input type="checkbox" style="width:20px;height:20px;margin-top:2px"'+(S['e'+i]?' checked':'')+' onchange="S[\'e'+i+'\']=this.checked;sv()"> <span>'+q+'</span></label>'}).join('');
+</script>
+</body></html>

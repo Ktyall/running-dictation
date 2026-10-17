@@ -53,35 +53,53 @@ input[type=text]{font:inherit;font-size:17px;padding:10px 12px;border:2px solid 
 .cont{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
 .cont div{background:var(--mist);border-radius:10px;padding:12px}
 .cont b{display:block;color:var(--navy);font-size:16px}
+.station.locked{opacity:.75;border-top-color:#9aa8b5}
+.task.ok{border-top:5px solid var(--ok)}
+.good{background:#e5f5ec;color:#145c35;border-radius:8px;padding:8px 10px;font-weight:700;margin-top:8px}
+.badm{background:#fdecea;color:#8e2a22;border-radius:8px;padding:8px 10px;font-weight:700;margin:8px 0}
+.build{min-height:52px;border:2px dashed var(--blue);border-radius:10px;padding:10px;font-size:17px;font-weight:700;background:var(--mist);margin:8px 0}
+.pairs{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+.colL,.colR{display:flex;flex-direction:column;gap:6px}
+.pl,.pr{font:inherit;font-size:14px;text-align:left;border:2px solid var(--sky);background:#fff;border-radius:10px;padding:9px 10px;color:var(--ink);cursor:pointer}
+.pl.cur{border-color:var(--blue);background:var(--mist);box-shadow:0 0 0 2px var(--blue)}
+.pl.matched{border-color:var(--ok);background:#effaf3;color:#145c35}
+.pr.used{opacity:.35}.pr.wrong{border-color:var(--bad);background:#fdf1f0}
+.tagm{display:block;font-size:12px;font-weight:800;margin-top:4px}
+.hlx{font-size:19px;line-height:2;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.hlx span{cursor:pointer;border-radius:4px}.hlx span.on{background:var(--sun)}.hlx span.good{background:#bfe8cf}.hlx span.bad{background:#fdecea;text-decoration:line-through}
+.opt.wrong{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.opt.right,.opt.sel.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opts.scale{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:2px solid var(--blue);border-radius:10px;overflow:hidden}
+.opts.scale .opt{border:0;border-radius:0;border-right:1px solid var(--sky)}
+@media(max-width:560px){.code{font-size:21px;letter-spacing:.05em;padding:8px 10px}.pairs{grid-template-columns:1fr}.colR{flex-direction:row;flex-wrap:wrap}}
+a.btn{display:inline-block;text-decoration:none}
 </style></head><body>
 <header class="top"><b>IBAMEX 2026 · Laboratorio del PEP</b><span class="team" id="teamLabel"></span></header>
 <div class="wrap" id="app"></div>
 <script>
-var KEY='ibamex26-lab';
+var KEY='ibamex26-lab2';
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-var state=load(); state.done=state.done||{};
+var state=load();state.done=state.done||{};state.open=state.open||{};state.t=state.t||{};
 var TEAMS=['Brújula','Bombilla','Lupa','Llave'];
 var THEMES=['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo nos organizamos','Cómo compartimos el planeta'];
 var CONCEPTS=['Forma','Función','Causa','Cambio','Conexión','Perspectiva','Responsabilidad'];
+var TABLERO='https://ktyall.github.io/running-dictation/tablero.html#d3';
 var S=[
-{id:'cimientos',name:'Los cimientos: misión y perfil',piece:'LOS',
-learn:'<p class="lead">Todo en el PEP responde a un <b>para qué</b> (la misión del IB) y a un <b>quién</b> (el perfil de la comunidad de aprendizaje). Las unidades son el camino; la misión y el perfil, el destino.</p>'+
+{id:'cimientos',code:'RAIZ',name:'Los cimientos: misión, perfil y ATL',piece:'LOS',learn:'<p class="lead">Todo en el PEP responde a un <b>para qué</b> (la misión del IB) y a un <b>quién</b> (el perfil de la comunidad de aprendizaje). Las unidades son el camino; la misión y el perfil, el destino.</p>'+
 '<div class="quote">«El Bachillerato Internacional tiene como meta formar personas solidarias, informadas y ávidas de conocimiento, capaces de contribuir a crear un mundo mejor y más pacífico, en el marco del entendimiento mutuo y el respeto intercultural.»<small>IB · Declaración de principios</small></div>'+
 '<p>El <b>perfil</b> traduce la misión en diez atributos que la comunidad (alumnado y adultos) se esfuerza por demostrar:</p>'+
 '<table class="info"><tr><td>Indagadores</td><td>Cultivamos la curiosidad y las habilidades para investigar, solos y con otras personas.</td></tr><tr><td>Informados e instruidos</td><td>Desarrollamos comprensión conceptual explorando varias disciplinas.</td></tr><tr><td>Pensadores</td><td>Pensamiento crítico y creativo; decisiones razonadas y éticas.</td></tr><tr><td>Buenos comunicadores</td><td>Nos expresamos en diversas lenguas y maneras; escuchamos otras perspectivas.</td></tr><tr><td>Íntegros</td><td>Honradez, equidad y responsabilidad por nuestros actos.</td></tr><tr><td>De mentalidad abierta</td><td>Valoramos nuestra cultura y la de otras personas; consideramos otros puntos de vista.</td></tr><tr><td>Solidarios</td><td>Empatía, respeto y acción para influir positivamente en otras personas.</td></tr><tr><td>Audaces</td><td>Enfrentamos la incertidumbre con determinación, ingenio y resiliencia.</td></tr><tr><td>Equilibrados</td><td>Bienestar físico, mental y emocional, propio y de los demás.</td></tr><tr><td>Reflexivos</td><td>Evaluamos nuestras ideas y experiencias para seguir aprendiendo.</td></tr></table>'+
-'<p class="small">Resumen de IB · Perfil de la comunidad de aprendizaje. En una unidad se eligen pocos atributos y se practican de verdad, igual que las habilidades ATL.</p>',
-task:'Respondan con la información de arriba. Cada pregunta tiene una sola respuesta.',opts:['Indagadores','Informados e instruidos','Pensadores','Buenos comunicadores','Íntegros','De mentalidad abierta','Solidarios','Audaces','Equilibrados','Reflexivos'],
-qs:[['La misión del IB busca formar personas solidarias, informadas y ávidas de…',0,'Así lo dice la declaración de principios: «ávidas de conocimiento».',['conocimiento','éxito','disciplina']],
-['¿Cuántos atributos tiene el perfil de la comunidad de aprendizaje?',1,'Son diez atributos.',['Siete','Diez','Doce']],
-['¿A quién se aplica el perfil?',2,'A toda la comunidad de aprendizaje: alumnado y adultos.',['Solo al alumnado','Solo al personal docente','A toda la comunidad: alumnado y adultos']],
-['«Cultivamos la curiosidad y las habilidades para investigar.»',0,'Indagadores.'],
-['«Honradez, equidad y responsabilidad por nuestros actos.»',4,'Íntegros.'],
-['«Valoramos nuestra cultura y la de otras personas; consideramos otros puntos de vista.»',5,'De mentalidad abierta.'],
-['«Enfrentamos la incertidumbre con determinación, ingenio y resiliencia.»',7,'Audaces.'],
-['«Evaluamos nuestras ideas y experiencias para seguir aprendiendo.»',9,'Reflexivos.']]},
-{id:'temas',name:'Los temas transdisciplinarios',piece:'PLA',
-learn:'<p class="lead">El programa de indagación del colegio se organiza en <b>seis temas transdisciplinarios</b>. Cada unidad vive dentro de un tema. El tema da el contexto; la idea central dice qué se va a comprender.</p>'+
+'<p class="small">Resumen de IB · Perfil de la comunidad de aprendizaje. En una unidad se eligen pocos atributos y se practican de verdad, igual que las habilidades ATL.</p>'+'<h3>Habilidades de los enfoques del aprendizaje (ATL)</h3><p>El perfil dice <b>quiénes</b> queremos ser. Las habilidades ATL son <b>cómo</b> aprendemos. Son cinco categorías y se enseñan, se practican y se reflexionan dentro de las unidades, como hicieron ayer en Running Dictation.</p><table class="info"><tr><td>Pensamiento</td><td>Pensar de forma crítica y creativa; transferir lo aprendido.</td></tr><tr><td>Investigación</td><td>Formular preguntas, reunir y evaluar información.</td></tr><tr><td>Comunicación</td><td>Intercambiar información; leer, escribir, escuchar y hablar.</td></tr><tr><td>Sociales</td><td>Colaborar, resolver conflictos, asumir funciones en un grupo.</td></tr><tr><td>Autogestión</td><td>Organizarse, manejar el tiempo, cuidar el propio bienestar.</td></tr></table>',
+ tasks:[
+  {k:'order',q:'Reconstruyan la declaración de principios del IB. Toquen las piezas en orden.',parts:['El IB tiene como meta formar personas','solidarias, informadas','y ávidas de conocimiento,','capaces de contribuir a crear','un mundo mejor y más pacífico,','en el marco del entendimiento mutuo','y el respeto intercultural.'],why:'Esa es la misión. Todo lo demás del PEP responde a ella.'},
+  {k:'pairs',q:'Momentos de estos dos días. Unan cada uno con el atributo del perfil que más se vio. Toquen un momento y después un atributo.',
+   L:['Preguntaron a Camila «¿Qué pasa después?» para descubrir lo que pensaba.','Siguieron con la Prueba relámpago en inglés aunque no entendían todo.','En Tres cuadernos escucharon a Camila antes de juzgar su respuesta.','Movieron las palancas del simulador para que Diego, Sofía, Lucía y Mateo pudieran mostrar lo que saben.','Cada mañana reconstruyeron en el rotafolio lo que recordaban y lo que aún preguntaban.'],
+   R:['Indagadores','Audaces','De mentalidad abierta','Solidarios','Reflexivos'],why:'El perfil no se enseña con un póster: se ve en lo que hacemos.'},
+  {k:'pick',q:'¿A quién se aplica el perfil de la comunidad de aprendizaje?',o:['Solo al alumnado','Solo al personal docente','A toda la comunidad: alumnado y adultos'],a:2,why:'A toda la comunidad de aprendizaje.'},
+  {k:'pick',q:'¿Cuántas categorías de habilidades ATL hay en el PEP?',o:['Tres','Cinco','Diez'],a:1,why:'Cinco: pensamiento, investigación, comunicación, sociales y autogestión.'},
+  {k:'pick',q:'En Running Dictation, una persona corría, otra escribía y el equipo se ponía de acuerdo. ¿Qué categoría ATL se practicaba sobre todo?',o:['Sociales','Investigación','Autogestión'],a:0,why:'Colaborar, repartir funciones y llegar a acuerdos son habilidades sociales.'}]},
+{id:'temas',code:'MAPA',name:'Los temas transdisciplinarios',piece:'PLA',learn:'<p class="lead">El programa de indagación del colegio se organiza en <b>seis temas transdisciplinarios</b>. Cada unidad vive dentro de un tema. El tema da el contexto; la idea central dice qué se va a comprender.</p>'+
 '<div class="quote">«Los temas transdisciplinarios de importancia, personal, local y global proporcionan el contexto para que los colegios estructuren un programa de indagación para todo el colegio.»<small>IB · El aprendizaje y la enseñanza, p. 11. Descriptores: figura 6, pp. 10-11</small></div>'+
 '<table class="info"><tr><td>Quiénes somos</td><td>Identidad como individuos y como colectivo: salud y bienestar; relaciones y pertenencia; aprendizaje y desarrollo.</td></tr>'+
 '<tr><td>Dónde nos encontramos en el tiempo y el espacio</td><td>Historias y orientación en el lugar, el espacio y el tiempo: épocas y acontecimientos; comunidades, patrimonio y cultura; movimiento, adaptación y transformación.</td></tr>'+
@@ -90,88 +108,122 @@ learn:'<p class="lead">El programa de indagación del colegio se organiza en <b>
 '<tr><td>Cómo nos organizamos</td><td>Sistemas, estructuras y redes: sistemas sociales y ecológicos; formas de sustento y comercio; representación, colaboración y toma de decisiones.</td></tr>'+
 '<tr><td>Cómo compartimos el planeta</td><td>Interdependencia del mundo humano y el natural: derechos, responsabilidades y dignidad de los seres vivos; futuros justos y pacíficos; naturaleza y coexistencia.</td></tr></table>'+
 '<p class="small">Descriptores resumidos de la figura 6. Una idea podría tocar dos temas: decide el énfasis.</p>',
-task:'¿A qué tema pertenece cada idea central? Busquen las palabras clave de cada descriptor en la tabla de arriba.',opts:THEMES,
-qs:[['Nuestras relaciones y nuestro sentido de pertenencia influyen en nuestro bienestar.',0,'Relaciones, pertenencia y bienestar: Quiénes somos.'],
-['A lo largo de la historia, las migraciones transforman las comunidades y su patrimonio.',1,'Épocas, comunidades, patrimonio y movimiento: Dónde nos encontramos en el tiempo y el espacio.'],
-['Las personas crean mensajes para dirigirse a un público específico o influir en este.',2,'Ejemplo oficial del IB (figura PO03): Cómo nos expresamos.'],
-['Los ciclos y sistemas de la naturaleza siguen patrones que podemos observar y predecir.',3,'Patrones, ciclos y sistemas: Cómo funciona el mundo.'],
-['Las comunidades organizan sistemas de comercio para producir y distribuir lo que necesitan.',4,'Sistemas, sustento y comercio: Cómo nos organizamos.'],
-['El mundo humano y el mundo natural son interdependientes: nuestras decisiones afectan a todos los seres vivos.',5,'Interdependencia entre lo humano y lo natural: Cómo compartimos el planeta.']]},
-{id:'conceptos',name:'Los conceptos especificados',piece:'NOS',
-learn:'<p class="lead">Los conceptos son la herramienta para que una unidad construya <b>comprensión</b> y no solo datos. El IB define <b>siete conceptos especificados</b>. Cada uno abre una pregunta distinta.</p>'+
+ tasks:[
+  {k:'hl',q:'Esta idea central vive en un tema. Toquen las DOS palabras que lo delatan (están en los descriptores de arriba). Luego toquen «Revisar».',
+   toks:[['Las comunidades ',0],['organizan ',0],['sistemas',1],[' de ',0],['comercio',1],[' para producir ',0],['y distribuir ',0],['lo que necesitan.',0]],why:'«Sistemas» y «comercio» aparecen en el descriptor de Cómo nos organizamos.'},
+  {k:'pick',q:'Entonces, ¿en qué tema vive esa idea central?',o:THEMES,a:4,why:'Cómo nos organizamos: sistemas, sustento y comercio.'},
+  {k:'pairs',q:'Unan cada idea central con su tema. Toquen una idea y después un tema.',
+   L:['Nuestras relaciones y nuestro sentido de pertenencia influyen en nuestro bienestar.','A lo largo de la historia, las migraciones transforman las comunidades y su patrimonio.','Las personas crean mensajes para dirigirse a un público específico o influir en este.','Los ciclos y sistemas de la naturaleza siguen patrones que podemos observar y predecir.','Las decisiones sobre los recursos naturales cambian la vida de las comunidades.'],
+   R:['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo compartimos el planeta'],why:'La última es la idea que reconstruyeron ayer. La Unidad del Año vivía en Cómo compartimos el planeta.'}]},
+{id:'conceptos',code:'LENTE',name:'Conceptos especificados y relacionados',piece:'NOS',learn:'<p class="lead">Los conceptos son la herramienta para que una unidad construya <b>comprensión</b> y no solo datos. El IB define <b>siete conceptos especificados</b>. Cada uno abre una pregunta distinta.</p>'+
 '<div class="quote">«Los conceptos son los medios a través de los cuales los maestros/as desarrollan las ideas centrales y los alumnos/as desarrollan la comprensión conceptual.»<small>IB · El aprendizaje y la enseñanza, p. 74</small></div>'+
 '<table class="info"><tr><td>Forma</td><td>¿Cómo es?</td></tr><tr><td>Función</td><td>¿Cómo funciona?</td></tr><tr><td>Causa</td><td>¿Por qué es así?</td></tr><tr><td>Cambio</td><td>¿Cómo está cambiando?</td></tr><tr><td>Conexión</td><td>¿Cómo está relacionado con otras cosas?</td></tr><tr><td>Perspectiva</td><td>¿Cuáles son los puntos de vista?</td></tr><tr><td>Responsabilidad</td><td>¿Cuáles son nuestras obligaciones?</td></tr></table>'+
-'<p><b>En la práctica:</b> una unidad usa dos o tres conceptos especificados, no los siete. El ejemplo oficial del IB usa tres: función, perspectiva y responsabilidad.</p>',
-task:'¿Qué concepto especificado mueve cada pregunta de indagación?',opts:CONCEPTS,
-qs:[['¿Cómo es un ecosistema de manglar?',0,'Describe cómo es algo: Forma.'],
-['¿Cómo funciona el sistema digestivo?',1,'Cómo trabaja algo: Función.'],
-['¿Por qué se inundan algunas colonias de la ciudad cuando llueve?',2,'Busca razones: Causa.'],
-['¿Cómo ha cambiado nuestro barrio en los últimos 50 años?',3,'Transformación en el tiempo: Cambio.'],
-['¿Qué relación hay entre lo que comemos y nuestra energía?',4,'Relación entre dos cosas: Conexión.'],
-['¿Cómo cuentan la misma noticia dos periódicos distintos?',5,'Puntos de vista: Perspectiva.'],
-['¿Qué podemos hacer para reducir la basura en el recreo?',6,'Obligaciones y acción: Responsabilidad.']]},
-{id:'idea',name:'Idea central y líneas de indagación',piece:'DEL',
-learn:'<p class="lead">La <b>idea central</b> es la comprensión que debe sobrevivir a la unidad. Es una oración en tono neutro que afirma una relación. No es un tema, ni una pregunta, ni una consigna.</p>'+
+'<p><b>En la práctica:</b> una unidad usa dos o tres conceptos especificados, no los siete. El ejemplo oficial del IB usa tres: función, perspectiva y responsabilidad.</p>'+'<h3>Conceptos relacionados</h3><p>Además de los conceptos especificados (en la plantilla: <b>conceptos clave</b>), cada unidad usa <b>conceptos relacionados</b>: propios de una disciplina, como erosión, oferta y demanda o ritmo. Dan profundidad.</p><p class="small">Ayer: la idea «Las decisiones sobre los recursos naturales cambian la vida de las comunidades» se mueve con causa, cambio y responsabilidad.</p>',
+ tasks:[
+  {k:'pairs',q:'Cada pregunta mira el mundo con un concepto especificado. Únanlos.',
+   L:['¿Cómo es un ecosistema de manglar?','¿Cómo funciona el sistema digestivo?','¿Por qué se inundan algunas colonias cuando llueve?','¿Cómo ha cambiado nuestro barrio en 50 años?','¿Qué relación hay entre lo que comemos y nuestra energía?','¿Cómo cuentan la misma noticia dos periódicos?','¿Qué podemos hacer para reducir la basura del recreo?'],
+   R:CONCEPTS,why:'Una pregunta, un lente.'},
+  {k:'pick',q:'¿Cuál de estos es un concepto relacionado (de una disciplina), no un concepto especificado?',o:['Cambio','Erosión','Perspectiva'],a:1,why:'Erosión es propio de las ciencias. Cambio y perspectiva son conceptos especificados.'},
+  {k:'pick',q:'La idea que reconstruyeron ayer: «Las decisiones sobre los recursos naturales cambian la vida de las comunidades». ¿Qué par de conceptos especificados la mueve mejor?',o:['Forma y función','Causa y responsabilidad','Perspectiva y forma'],a:1,why:'Las decisiones causan cambios, y alguien es responsable de ellas.'}]},
+{id:'idea',code:'FARO',name:'Idea central y líneas de indagación',piece:'DEL',learn:'<p class="lead">La <b>idea central</b> es la comprensión que debe sobrevivir a la unidad. Es una oración en tono neutro que afirma una relación. No es un tema, ni una pregunta, ni una consigna.</p>'+
 '<div class="quote">«La idea central es un enunciado conceptual amplio y general que constituye un marco para la unidad de indagación transdisciplinaria.»<small>IB · El aprendizaje y la enseñanza, p. 73</small></div>'+
 '<h3>Preguntas del IB para revisar una idea central</h3><ul><li>¿Apoya la comprensión conceptual?</li><li>¿Es lo suficientemente amplia como para ofrecer diversas líneas de indagación?</li><li>¿Está sustentada por conceptos?</li><li>¿Está abierta a una variedad de respuestas del alumnado?</li></ul>'+
 '<h3>Líneas de indagación</h3><p>Cada unidad tiene <b>tres o cuatro líneas de indagación</b>, escritas como <b>enunciados o frases</b> (no como preguntas ni actividades). Aclaran la idea central y definen el alcance de la indagación. <span class="small">(p. 74)</span></p>'+
 '<div class="quote"><b>Ejemplo oficial</b> · Tema: Cómo nos expresamos · Idea central: Las personas crean mensajes para dirigirse a un público específico o influir en este. · Conceptos especificados: función, perspectiva, responsabilidad · Líneas: cómo se utilizan las imágenes, el texto y la música para influir en la conducta del público; evaluación crítica de los mensajes en los medios; cómo responden las personas a los mensajes.<small>IB · El aprendizaje y la enseñanza, figura PO03, pp. 73-74</small></div>',
-task:'Parte A: clasifiquen cada enunciado. Parte B: ¿cuáles sirven como líneas de indagación para la idea central del ejemplo oficial?',
-qs:[['«Los volcanes»',0,'Es un tema: nombra un contenido, no afirma una relación.',['Tema','Idea central débil','Idea central fuerte']],
-['«Los recursos naturales son importantes»',1,'Débil: es obvia y no dice qué relación se va a comprender.',['Tema','Idea central débil','Idea central fuerte']],
-['«Debemos cuidar el agua»',1,'Débil: es una consigna moral; no deja espacio a distintas respuestas.',['Tema','Idea central débil','Idea central fuerte']],
-['«Las fuerzas naturales transforman la Tierra y obligan a las comunidades a adaptarse»',2,'Fuerte: afirma una relación (causa, cambio) y puede viajar a otros casos.',['Tema','Idea central débil','Idea central fuerte']],
-['«Las decisiones sobre los recursos afectan a los ecosistemas y a las comunidades»',2,'Fuerte: es la idea que reconstruyeron ayer. Afirma una relación transferible.',['Tema','Idea central débil','Idea central fuerte']],
-['Línea: «Cómo responden las personas a los mensajes»',0,'Sí: es un enunciado y aclara la idea central.',['Sirve como línea','No sirve']],
-['Línea: «Hacer un cartel publicitario»',1,'No: es una actividad, no una línea de indagación.',['Sirve como línea','No sirve']],
-['Línea: «¿Qué es la publicidad?»',1,'No: es una pregunta y es muy estrecha. Las líneas se escriben como enunciados.',['Sirve como línea','No sirve']],
-['Línea: «Evaluación crítica de los mensajes presentados en los medios de comunicación»',0,'Sí: es una línea del ejemplo oficial.',['Sirve como línea','No sirve']]]},
-{id:'indagacion',name:'Estructurada, guiada o abierta',piece:'PEP',
-learn:'<p class="lead">La indagación no es una sola cosa. Va de más estructurada a más abierta, y el docente decide con intención cuál usar en cada momento.</p>'+
+ tasks:[
+  {k:'order',q:'Armen la idea central del ejemplo oficial del IB.',parts:['Las personas','crean mensajes','para dirigirse','a un público específico','o influir en este.'],why:'Afirma una relación entre las personas, los mensajes y el público.'},
+  {k:'sort',q:'La aduana otra vez. Clasifiquen cada frase.',o:['Tema','Idea central débil','Idea central fuerte'],
+   items:[['«Los volcanes»',0,'Tema: nombra un contenido.'],['«Debemos cuidar el agua»',1,'Débil: es una consigna, no deja espacio a distintas respuestas.'],['«Las fuerzas naturales transforman la Tierra y obligan a las comunidades a adaptarse»',2,'Fuerte: afirma una relación que viaja.'],['«Los recursos naturales son importantes»',1,'Débil: era la idea de la Unidad del Año.'],['«Los mercados»',0,'Tema.']]},
+  {k:'sort',q:'Para la idea oficial de arriba, ¿cuáles sirven como líneas de indagación?',o:['Sirve como línea','No sirve'],
+   items:[['«Cómo responden las personas a los mensajes»',0,'Sí: enunciado que aclara la idea central.'],['«Hacer un cartel publicitario»',1,'No: es una actividad.'],['«¿Qué es la publicidad?»',1,'No: es una pregunta y es muy estrecha.'],['«Evaluación crítica de los mensajes en los medios de comunicación»',0,'Sí: es una línea del ejemplo oficial.']]}]},
+{id:'indagacion',code:'PUENTE',name:'Estructurada, guiada o abierta',piece:'PEP',learn:'<p class="lead">La indagación no es una sola cosa. Va de más estructurada a más abierta, y el docente decide con intención cuál usar en cada momento.</p>'+
 '<div class="cont"><div><b>Estructurada</b>El alumnado recibe datos o información para analizar.</div><div><b>Guiada</b>El docente presenta las preguntas iniciales; el alumnado decide métodos, soluciones y nuevas preguntas.</div><div><b>Abierta</b>El alumnado plantea sus propias preguntas y halla soluciones.</div></div>'+
 '<div class="quote">«La indagación puede variar: desde una forma estructurada en la que los alumnos/as reciben datos o información para analizar; pasando por una indagación guiada…; hasta una indagación abierta en la que los alumnos/as plantean preguntas y hallan soluciones.»<small>IB · El aprendizaje y la enseñanza, p. 51 (Bonnstetter, 1998)</small></div>'+
 '<div class="quote">«El PEP hace hincapié en la indagación guiada como enfoque pedagógico principal.»<small>IB · El aprendizaje y la enseñanza, p. 46</small></div>'+
 '<p>La enseñanza directa también tiene lugar en un aula que indaga, cuando es necesaria para apoyar la comprensión común. <span class="small">(p. 51)</span></p>',
-task:'¿Qué tipo de indagación describe cada escena?',opts:['Estructurada','Guiada','Abierta'],
-qs:[['La maestra entrega los datos de temperatura de la semana y pide al grupo explicar el patrón.',0,'Reciben los datos para analizar: estructurada.'],
-['El maestro pregunta por qué se desperdicia comida en el comedor. Cada equipo decide cómo investigar y qué medir.',1,'La pregunta inicial es del docente; los métodos, del alumnado: guiada.'],
-['Después de una salida al parque, cada equipo formula su propia pregunta y busca cómo responderla.',2,'La pregunta nace del alumnado: abierta.'],
-['El grupo sigue paso a paso un experimento con materiales y resultados esperados definidos por la docente.',0,'Todo está definido de antemano: estructurada.'],
-['La docente propone la pregunta inicial sobre los anuncios; los equipos eligen sus fuentes y formulan nuevas preguntas.',1,'Pregunta inicial del docente, caminos del alumnado: guiada.'],
-['Un estudiante pregunta por qué su abuela habla otra lengua y el grupo convierte esa pregunta en su investigación.',2,'La pregunta del alumnado dirige la indagación: abierta.']]}
+ tasks:[
+  {k:'sort',scale:1,q:'Ubiquen cada escena en la línea, de más estructurada a más abierta.',o:['Estructurada','Guiada','Abierta'],
+   items:[['La maestra entrega los datos de temperatura de la semana y pide explicar el patrón.',0,'Reciben los datos para analizar.'],['El maestro pregunta por qué se desperdicia comida en el comedor. Cada equipo decide cómo investigar.',1,'Pregunta del docente, métodos del alumnado.'],['Después de una salida al parque, cada equipo formula su propia pregunta.',2,'La pregunta nace del alumnado.'],['El grupo sigue paso a paso un experimento con resultados esperados.',0,'Todo está definido de antemano.'],['Un estudiante pregunta por qué su abuela habla otra lengua y el grupo lo convierte en su investigación.',2,'La pregunta del alumnado dirige.']]},
+  {k:'pick',q:'¿Qué enfoque enfatiza el PEP como principal?',o:['La indagación abierta','La indagación guiada','La enseñanza directa'],a:1,why:'«El PEP hace hincapié en la indagación guiada como enfoque pedagógico principal.»'},
+  {k:'pick',q:'Una maestra quiere pasar de una indagación estructurada a una guiada. ¿Qué cambia?',o:['Da más datos para analizar','Ella plantea la pregunta inicial y el alumnado decide cómo investigar','El alumnado elige el tema y la pregunta'],a:1,why:'En la guiada, la pregunta inicial es del docente y los caminos son del alumnado.'}]}
 ];
-function el(h){var d=document.createElement('div');d.innerHTML=h;return d}
+/* ---------- helpers ---------- */
+function shuf(n,seed){var a=[];for(var i=0;i<n;i++)a.push(i);var x=seed;for(var j=n-1;j>0;j--){x=(x*9301+49297)%233280;var r=Math.floor(x/233280*(j+1));var t=a[j];a[j]=a[r];a[r]=t}return a}
+function seedOf(s){var h=7;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%233280;return h}
 function app(){return document.getElementById('app')}
 function setTeam(){document.getElementById('teamLabel').textContent=state.team?('Equipo '+state.team):''}
+function unlock(code){code=(code||'').trim().toUpperCase();for(var i=0;i<S.length;i++)if(S[i].code==code){state.open[S[i].id]=1;save();return i}return -1}
 function home(){
-  setTeam();var a=app();
-  if(!state.team){a.innerHTML='<h1>Bienvenidos al laboratorio</h1><p class="lead">Ayer y anteayer vivieron <b>por qué</b> el PEP funciona. Hoy aprenden <b>con qué herramientas</b> se construye una unidad: los planos del PEP.</p><div class="card"><h3>Elijan su equipo</h3><div class="opts" id="tm"></div></div>';
-    TEAMS.forEach(function(t){var b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=function(){state.team=t;save();route()};a.querySelector('#tm').appendChild(b)});return}
-  var n=Object.keys(state.done).length;
-  a.innerHTML='<h1>Los planos del PEP</h1><p class="lead">Cinco estaciones. En cada una: <b>1.</b> lean la información, <b>2.</b> resuelvan el reto en equipo, <b>3.</b> ganen una pieza del código. Las estaciones están en carteles alrededor del salón: escaneen el QR de cada cartel. Pueden hacerlas en cualquier orden.</p><div class="grid" id="st"></div><div class="card" id="fin"></div>';
-  S.forEach(function(st,i){var d=!!state.done[st.id];var b=document.createElement('button');b.className='station'+(d?' done':'');
-    b.innerHTML='<div class="n">ESTACIÓN '+(i+1)+'</div><div class="t">'+st.name+'</div><div class="st">'+(d?'✓ Pieza: '+st.piece:'Pendiente')+'</div>';b.onclick=function(){station(i)};a.querySelector('#st').appendChild(b)});
-  var f=a.querySelector('#fin');
-  if(n<S.length){f.innerHTML='<h3>Código del equipo</h3><p>Piezas: '+S.map(function(s){return state.done[s.id]?'<b>'+s.piece+'</b>':'___'}).join(' · ')+'</p><p class="small">Cuando tengan las cinco, aparecerá el código completo y la lista para planificar su unidad.</p>'}
-  else{f.innerHTML='<div class="tag">LABORATORIO COMPLETO</div><div class="code">LOS·PLA·NOS·DEL·PEP</div><p>Muestren este código al facilitador.</p><h3>Sus planos para la unidad de hoy</h3><ol class="steps"><li><b>Perfil:</b> ¿qué uno o dos atributos desarrollará su unidad?</li><li><b>Tema transdisciplinario:</b> ¿en cuál de los seis vive su unidad?</li><li><b>Idea central:</b> una oración que afirma una relación y puede viajar.</li><li><b>Dos o tres conceptos especificados</b> que mueven la idea central.</li><li><b>Tres o cuatro líneas de indagación</b>, escritas como enunciados.</li><li><b>Tipo de indagación:</b> ¿dónde será estructurada, guiada o abierta?</li></ol>'}
-  var r=document.createElement('p');r.className='small';r.innerHTML='<a href="#" id="chg">Cambiar de equipo</a>';a.appendChild(r);a.querySelector('#chg').onclick=function(e){e.preventDefault();state={done:{}};save();home()};
-  window.scrollTo(0,0)}
+ setTeam();var a=app();
+ if(!state.team){a.innerHTML='<h1>Bienvenidos al laboratorio</h1><p class="lead">Ayer y anteayer vivieron <b>por qué</b> el PEP funciona. Hoy aprenden <b>con qué herramientas</b> se construye una unidad: los planos del PEP.</p><div class="card"><h3>Elijan su equipo</h3><div class="opts" id="tm"></div></div>';
+  TEAMS.forEach(function(t){var b=document.createElement('button');b.className='opt';b.textContent=t;b.onclick=function(){state.team=t;save();route()};a.querySelector('#tm').appendChild(b)});return}
+ var n=Object.keys(state.done).length;
+ a.innerHTML='<h1>Los planos del PEP</h1><p class="lead">Hay <b>cinco carteles</b> en el salón. Levántense, busquen un cartel y <b>escaneen su QR</b> para abrir la estación. En cada una: lean, resuelvan el reto en equipo y ganen una pieza del código. El orden no importa.</p><div class="grid" id="st"></div><div class="card"><h3>¿Sin cámara?</h3><p class="small">Escriban el código que aparece en el cartel.</p><div class="row"><input type="text" id="cd" placeholder="Código del cartel" autocapitalize="characters"><button class="btn" id="go">Abrir</button></div><p class="small" id="cdm"></p></div><div class="card" id="fin"></div>';
+ S.forEach(function(st,i){var d=!!state.done[st.id],o=!!state.open[st.id];var b=document.createElement('button');b.className='station'+(d?' done':'')+(o?'':' locked');
+  b.innerHTML='<div class="n">ESTACIÓN '+(i+1)+'</div><div class="t">'+st.name+'</div><div class="st">'+(d?'✓ Pieza: '+st.piece:o?'Abierta · continuar':'🔒 Escaneen el cartel '+(i+1))+'</div>';
+  b.onclick=function(){if(o||d)station(i);else{var m=document.getElementById('cdm');m.textContent='Esta estación se abre en su cartel. Búsquenlo en el salón.';}};a.querySelector('#st').appendChild(b)});
+ a.querySelector('#go').onclick=function(){var i=unlock(a.querySelector('#cd').value);if(i<0)a.querySelector('#cdm').textContent='Ese código no existe. Revisen el cartel.';else station(i)};
+ var f=a.querySelector('#fin');
+ if(n<S.length){f.innerHTML='<h3>Código del equipo</h3><p>Piezas: '+S.map(function(s){return state.done[s.id]?'<b>'+s.piece+'</b>':'___'}).join(' · ')+'</p><p class="small">Cuando tengan las cinco, aparecerá el código completo.</p>'}
+ else{f.innerHTML='<div class="tag">LABORATORIO COMPLETO</div><div class="code">LOS·PLA·NOS·DEL·PEP</div><p>Muestren este código al facilitador.</p><p>Ahora construyan su unidad en el tablero del equipo, pestaña Día 3. Cada sección les recuerda qué estación o qué día la explica.</p><p><a class="btn" href="'+TABLERO+'">Abrir el tablero · Día 3</a></p>'}
+ var r=document.createElement('p');r.className='small';r.innerHTML='<a href="#" id="chg">Cambiar de equipo</a>';a.appendChild(r);a.querySelector('#chg').onclick=function(e){e.preventDefault();if(confirm('¿Cambiar de equipo? Se borra el avance en este celular.')){state={done:{},open:{},t:{}};save();home()}};
+ window.scrollTo(0,0)}
 function station(i){
-  var st=S[i],a=app();
-  a.innerHTML='<p><a href="#" id="back">← Volver a las estaciones</a></p><div class="tag">ESTACIÓN '+(i+1)+' · APRENDAN</div><h2>'+st.name+'</h2><div class="card">'+st.learn+'</div><div class="tag">RETO</div><h2>'+st.task+'</h2><div id="qs"></div><div class="row"><button class="btn" id="chk">Revisar respuestas</button><span class="result" id="res"></span></div>';
-  a.querySelector('#back').onclick=function(e){e.preventDefault();home()};
-  var ans=[];var box=a.querySelector('#qs');
-  st.qs.forEach(function(q,k){var opts=q[3]||st.opts;var d=el('<div class="q"><div class="txt">'+(k+1)+'. '+q[0]+'</div><div class="opts"></div><div class="fb"></div></div>').firstChild;
-    opts.forEach(function(o,j){var b=document.createElement('button');b.className='opt';b.textContent=o;b.onclick=function(){ans[k]=j;[].forEach.call(d.querySelectorAll('.opt'),function(x){x.classList.remove('sel')});b.classList.add('sel');d.classList.remove('right','wrong')};d.querySelector('.opts').appendChild(b)});
-    box.appendChild(d)});
-  a.querySelector('#chk').onclick=function(){var ok=0;[].forEach.call(box.children,function(d,k){var q=st.qs[k];var fb=d.querySelector('.fb');d.classList.remove('right','wrong');
-      if(ans[k]===undefined){return}
-      if(ans[k]===q[1]){ok++;d.classList.add('right');fb.textContent='✓ '+q[2]}else{d.classList.add('wrong');fb.textContent='Todavía no. Vuelvan a la información de arriba y discutan.'}});
-    var res=a.querySelector('#res');
-    if(ok===st.qs.length){state.done[st.id]=1;save();res.innerHTML='¡Estación completa! Busquen otro cartel. Pieza del código: <span class="code" style="font-size:22px;padding:4px 12px">'+st.piece+'</span> <button class="btn ghost" id="next">Volver a las estaciones</button>';a.querySelector('#next').onclick=home}
-    else{res.textContent=ok+' de '+st.qs.length+' correctas. Corrijan las marcadas en rojo.'}};
-  window.scrollTo(0,0)}
-function route(){var m=/^#e([1-5])$/.exec(location.hash);if(state.team&&m){var i=+m[1]-1;history.replaceState(null,'',location.pathname);station(i)}else home()}
+ var st=S[i],a=app();state.open[st.id]=1;save();
+ a.innerHTML='<p><a href="#" id="back">← Volver a las estaciones</a></p><div class="tag">ESTACIÓN '+(i+1)+' · APRENDAN</div><h2>'+st.name+'</h2><div class="card">'+st.learn+'</div><div class="tag">RETO EN EQUIPO · '+st.tasks.length+' PARTES</div><div id="tasks"></div><div id="res"></div>';
+ a.querySelector('#back').onclick=function(e){e.preventDefault();home()};
+ drawTasks(i);window.scrollTo(0,0)}
+function tst(i,k){var key=S[i].id+'_'+k;state.t[key]=state.t[key]||{};return state.t[key]}
+function drawTasks(i){
+ var st=S[i],box=document.getElementById('tasks');if(!box)return;box.innerHTML='';
+ var allDone=true;
+ for(var k=0;k<st.tasks.length;k++){var t=st.tasks[k],s=tst(i,k);var c=document.createElement('div');c.className='card task'+(s.ok?' ok':'');
+  c.innerHTML='<div class="tag">PARTE '+(k+1)+'</div><h3 style="text-transform:none;letter-spacing:0;font-size:17px;color:var(--navy)">'+t.q+'</h3><div class="body"></div><div class="fbk"></div>';
+  box.appendChild(c);
+  ({pick:dPick,order:dOrder,pairs:dPairs,hl:dHl,sort:dSort})[t.k](i,k,t,s,c.querySelector('.body'),c.querySelector('.fbk'));
+  if(!s.ok){allDone=false;break}}
+ var res=document.getElementById('res');
+ if(allDone){if(!state.done[st.id]){state.done[st.id]=1;save()}
+  res.innerHTML='<div class="card" style="border-top:5px solid var(--ok)"><div class="tag">ESTACIÓN COMPLETA</div><p>Pieza del código: <span class="code" style="font-size:22px;padding:4px 12px">'+st.piece+'</span></p><p>Busquen otro cartel en el salón.</p><button class="btn ghost" id="next">Volver a las estaciones</button></div>';document.getElementById('next').onclick=home}
+ else res.innerHTML='<p class="small">Resuelvan esta parte para ver la siguiente.</p>'}
+function okMsg(f,t){f.innerHTML='<div class="good">✓ '+t.why+'</div>'}
+function redraw(i){var y=window.scrollY;drawTasks(i);window.scrollTo(0,y)}
+/* pick */
+function dPick(i,k,t,s,b,f){var ord=shuf(t.o.length,seedOf(S[i].id+k));
+ ord.forEach(function(j){var x=document.createElement('button');x.className='opt'+(s.ok&&j==t.a?' sel right':'')+((s.bad||[]).indexOf(j)>-1?' wrong':'');x.textContent=t.o[j];x.disabled=!!s.ok;
+  x.onclick=function(){if(j==t.a){s.ok=1}else{s.bad=s.bad||[];if(s.bad.indexOf(j)<0)s.bad.push(j)}save();redraw(i)};b.appendChild(x)});
+ b.className='body opts';if(s.ok)okMsg(f,t);else if(s.bad&&s.bad.length)f.innerHTML='<div class="badm">Todavía no. Vuelvan a la información de arriba.</div>'}
+/* order */
+function dOrder(i,k,t,s,b,f){s.seq=s.seq||[];var ord=shuf(t.parts.length,seedOf(S[i].id+'o'+k));
+ if(s.ok)s.seq=t.parts.map(function(_,j){return j});
+ b.innerHTML='<div class="build">'+(s.seq.length?s.seq.map(function(j){return t.parts[j]}).join(' '):'<span class="small">Toquen las piezas en orden…</span>')+'</div><div class="opts"></div>';
+ if(!s.ok)ord.forEach(function(j){if(s.seq.indexOf(j)>-1)return;var x=document.createElement('button');x.className='opt';x.textContent=t.parts[j];x.onclick=function(){s.seq.push(j);if(s.seq.length==t.parts.length){var good=s.seq.every(function(v,q){return v==q});if(good)s.ok=1;else s.wrong=1}save();redraw(i)};b.querySelector('.opts').appendChild(x)});
+ if(s.ok)okMsg(f,t);else if(s.wrong&&s.seq.length==t.parts.length){f.innerHTML='<div class="badm">El orden no es correcto. </div>';var r=document.createElement('button');r.className='btn ghost';r.textContent='Empezar de nuevo';r.onclick=function(){s.seq=[];s.wrong=0;save();redraw(i)};f.appendChild(r)}
+ else if(s.seq.length){var u=document.createElement('button');u.className='opt';u.textContent='↶ Quitar la última';u.onclick=function(){s.seq.pop();save();redraw(i)};f.appendChild(u)}}
+/* pairs */
+function dPairs(i,k,t,s,b,f){s.m=s.m||{};var ordL=shuf(t.L.length,seedOf(S[i].id+'l'+k)),ordR=shuf(t.R.length,seedOf(S[i].id+'r'+k+'x'));
+ b.innerHTML='<div class="pairs"><div class="colL"></div><div class="colR"></div></div>';
+ ordL.forEach(function(j){var x=document.createElement('button');var done=s.m[j];x.className='pl'+(done?' matched':'')+(s.selL===j?' cur':'');x.innerHTML=t.L[j]+(done?'<span class="tagm">'+t.R[j]+'</span>':'');x.disabled=!!done;x.onclick=function(){s.selL=j;s.err=null;save();redraw(i)};b.querySelector('.colL').appendChild(x)});
+ ordR.forEach(function(j){var used=s.m[j];var x=document.createElement('button');x.className='pr'+(used?' used':'')+(s.err===j?' wrong':'');x.textContent=t.R[j];x.disabled=!!used;
+  x.onclick=function(){if(s.selL==null){s.hint=1;save();redraw(i);return}if(s.selL===j){s.m[j]=1;s.selL=null;s.err=null;if(Object.keys(s.m).length==t.L.length)s.ok=1}else{s.err=j}save();redraw(i)};b.querySelector('.colR').appendChild(x)});
+ if(s.ok)okMsg(f,t);else if(s.err!=null)f.innerHTML='<div class="badm">No es esa pareja. Relean y prueben otra.</div>';else if(s.hint)f.innerHTML='<p class="small">Primero toquen un elemento de la izquierda.</p>'}
+/* highlight */
+function dHl(i,k,t,s,b,f){s.sel=s.sel||[];
+ b.innerHTML='<div class="hlx">'+t.toks.map(function(x,j){var c='';var on=s.sel.indexOf(j)>-1;if(s.ok&&x[1])c='good';else if(s.chk){if(x[1]&&on)c='good';else if(on)c='bad'}else if(on)c='on';return '<span data-j="'+j+'" class="'+c+'">'+x[0]+'</span>'}).join('')+'</div>';
+ if(!s.ok){[].forEach.call(b.querySelectorAll('span'),function(sp){sp.onclick=function(){var j=+sp.dataset.j;var q=s.sel.indexOf(j);if(q>-1)s.sel.splice(q,1);else s.sel.push(j);s.chk=0;save();redraw(i)}});
+  var r=document.createElement('button');r.className='btn';r.textContent='Revisar';r.onclick=function(){s.chk=1;var keys=t.toks.map(function(x,j){return x[1]?j:-1}).filter(function(j){return j>-1});var good=keys.every(function(j){return s.sel.indexOf(j)>-1})&&s.sel.length==keys.length;if(good)s.ok=1;save();redraw(i)};b.appendChild(r)}
+ if(s.ok)okMsg(f,t);else if(s.chk)f.innerHTML='<div class="badm">Todavía no. Busquen en la tabla las palabras del descriptor.</div>'}
+/* sort (classify each item) */
+function dSort(i,k,t,s,b,f){s.r=s.r||{};var ord=shuf(t.items.length,seedOf(S[i].id+'s'+k));var n=0;
+ ord.forEach(function(j){var it=t.items[j],r=s.r[j]||{};if(r.ok)n++;var d=document.createElement('div');d.className='q'+(r.ok?' right':r.bad?' wrong':'');
+  d.innerHTML='<div class="txt">'+it[0]+'</div><div class="opts'+(t.scale?' scale':'')+'"></div><div class="fb">'+(r.ok?'✓ '+it[2]:r.bad?'Todavía no. Discútanlo y prueben otra.':'')+'</div>';
+  t.o.forEach(function(o,q){var x=document.createElement('button');x.className='opt'+(r.ok&&q==it[1]?' sel':'')+((r.bad||[]).indexOf(q)>-1&&!r.ok?' wrong':'');x.textContent=o;x.disabled=!!r.ok;x.onclick=function(){if(q==it[1])r.ok=1;else{r.bad=r.bad||[];r.bad.push(q)}s.r[j]=r;if(t.items.every(function(_,z){return s.r[z]&&s.r[z].ok}))s.ok=1;save();redraw(i)};d.querySelector('.opts').appendChild(x)});
+  b.appendChild(d)});
+ if(s.ok)f.innerHTML='<div class="good">✓ Parte completa.</div>';else f.innerHTML='<p class="small">'+n+' de '+t.items.length+' listas.</p>'}
+function route(){var m=/c=([a-zA-Z]+)/.exec(location.hash);
+ if(m){var i=unlock(m[1]);history.replaceState(null,'',location.pathname);if(state.team&&i>-1){station(i);return}if(i>-1)state.pending=i}
+ if(state.team&&state.pending!=null){var p=state.pending;state.pending=null;save();station(p);return}
+ home()}
 window.addEventListener('hashchange',route);
 route();
 </script>

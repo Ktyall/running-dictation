@@ -137,6 +137,12 @@ textarea{min-height:70px;resize:vertical}
 .pres p{font-size:22px;line-height:1.35;margin:4px 0}
 .pres .x{position:fixed;top:12px;right:12px;background:#fff;color:var(--navy);border:0;border-radius:20px;padding:8px 14px;font:inherit;font-weight:800}
 .hide{display:none}
+.refbar{background:#fff4e0;border-left:4px solid #d9822b;border-radius:8px;padding:8px 10px;font-size:14px;margin:8px 0}
+.hint{font-size:13px;color:#4e5f6d;margin:-2px 0 6px}
+.warn{font-size:13px;color:var(--bad);font-weight:700;margin-top:4px}
+details.sum{background:var(--mist);border:1.5px solid var(--sky);border-radius:10px;padding:8px 12px;margin:8px 0 4px;font-size:14px}
+details.sum summary{font-weight:800;color:var(--navy);cursor:pointer}
+details.sum dl{margin:6px 0 0}details.sum dt{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--blue);margin-top:6px}details.sum dd{margin:0}
 @media print{header.top,.tabs,.nav,.btn,.status,.stepnav,.noprint{display:none!important}.card{box-shadow:none;border:1px solid #ccc}body{background:#fff}}
 </style></head><body>
 <header class="top"><b>Tablero del equipo</b><button id="teamBtn" class="hide" onclick="changeTeam()"></button></header>
@@ -154,6 +160,7 @@ function X(id){S.x[id]=S.x[id]||{};return S.x[id]}
 
 var CONCEPTS=[['Forma','¿Cómo es?'],['Función','¿Cómo funciona?'],['Causa','¿Por qué es así?'],['Cambio','¿Cómo cambia?'],['Conexión','¿Cómo se conecta con otras cosas?'],['Perspectiva','¿Cuáles son los puntos de vista?'],['Responsabilidad','¿Cuál es nuestra responsabilidad?']];
 var THEMES=['Quiénes somos','Dónde nos encontramos en el tiempo y el espacio','Cómo nos expresamos','Cómo funciona el mundo','Cómo nos organizamos','Cómo compartimos el planeta'];
+var TDESC={'Quiénes somos':'Identidad: salud y bienestar; relaciones y pertenencia; aprendizaje y desarrollo.','Dónde nos encontramos en el tiempo y el espacio':'Épocas y acontecimientos; comunidades, patrimonio y cultura; movimiento, adaptación y transformación.','Cómo nos expresamos':'Inspiración, imaginación y creatividad; prácticas de comunicación; interpretaciones y respuestas.','Cómo funciona el mundo':'Patrones, ciclos y sistemas; prácticas, métodos y herramientas; descubrimiento, diseño e innovación.','Cómo nos organizamos':'Sistemas sociales y ecológicos; formas de sustento y comercio; representación, colaboración y toma de decisiones.','Cómo compartimos el planeta':'Derechos, responsabilidades y dignidad de los seres vivos; futuros justos y pacíficos; naturaleza y coexistencia.'};
 var PROFILE=['Indagadores','Informados e instruidos','Pensadores','Buenos comunicadores','Íntegros','De mentalidad abierta','Solidarios','Audaces','Equilibrados','Reflexivos'];
 
 /* ======================= DÍA 2 ======================= */
@@ -232,40 +239,88 @@ var MODS={d2:[
 /* ======================= DÍA 3 ======================= */
 d3:[
 {id:'nucleo',tag:'DÍA 3 · SU UNIDAD',title:'El núcleo de su unidad',steps:[
- {ph:'Construyan',k:'form',h:'Su unidad',body:'Trabajen sobre una unidad real que alguien del equipo vaya a enseñar.',
-  f:[{k:'e1',t:'x',q:'Unidad y grado'},{k:'e2',t:'s',q:'Tema transdisciplinario',o:THEMES}],
-  ej:'«El mercado de mi comunidad», 3.º de primaria · Cómo nos organizamos'},
- {ph:'Construyan',k:'form',h:'Su idea central',body:'Una relación que pueda viajar. Las pistas de abajo se encienden mientras escriben.',
-  f:[{k:'e3',t:'t',q:'Idea central',lights:1},{k:'e3k',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Dice una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']}],
-  ej:'«Los mercados conectan a quienes producen con quienes consumen.»',guide:'significado'},
- {ph:'Construyan',k:'form',h:'Conceptos',body:'Elijan dos o tres. Cada concepto trae su pregunta: así guía la indagación.',
-  f:[{k:'e4',t:'cq',q:'Conceptos especificados',o:CONCEPTS}],
-  ej:'Función (¿cómo funciona un mercado?) · Conexión (¿cómo se conectan productores y compradores?) · Cambio'},
- {ph:'Construyan',k:'form',h:'Líneas de indagación',body:'Tres frases, no preguntas. Cada una abre un camino para investigar la idea central.',
-  f:[{k:'e5',t:'x',q:'Línea 1'},{k:'e6',t:'x',q:'Línea 2'},{k:'e7',t:'x',q:'Línea 3'}],
-  ej:'1. Cómo funciona un mercado. 2. Cómo se conectan quienes producen y quienes compran. 3. Cómo cambian los mercados con el tiempo.'},
- {ph:'Construyan',k:'form',h:'Tipo de indagación',
-  f:[{k:'e8',t:'cq1',q:'Tipo de indagación principal',o:[['Estructurada','La docente plantea la pregunta y el procedimiento.'],['Guiada','La docente plantea la pregunta; el alumnado decide cómo investigar.'],['Abierta','El alumnado plantea la pregunta y el camino.']]},
-     {k:'e9',t:'c',q:'Atributos del perfil que desarrollará',o:PROFILE,opc:1}]},
+ {ph:'Construyan',k:'form',h:'Datos de la unidad',body:'Elijan una unidad real que alguien del equipo vaya a enseñar. Todo lo que escriban aparecerá arriba, en «Su unidad hasta ahora», para consultarlo en cada paso.',
+  f:[{k:'e1',t:'x',q:'Título provisional de la unidad'},{k:'e1g',t:'x',q:'Grado y edad aproximada del alumnado'},
+     {k:'e1t',t:'x',q:'Cronograma previsto',hint:'Por ejemplo: 6 semanas, de enero a febrero.',opc:1},
+     {k:'e1r',t:'cq1',q:'Ruta',o:[['Unidad nueva',''],['Revisión de una unidad existente',''],['Reparación de una muestra','']]}],
+  ej:'«El mercado de mi comunidad» · 3.º de primaria, 8 a 9 años · 6 semanas · Revisión de una unidad existente'},
+ {ph:'Construyan',k:'form',h:'1 · Contexto, propósito y conexiones',ref:'Laboratorio, estación 2: el tema transdisciplinario da el contexto.',
+  f:[{k:'e2',t:'s',q:'Tema transdisciplinario',o:THEMES,desc:1},
+     {k:'ctx1',t:'t',q:'Contexto local y global relevante',hint:'¿Qué pasa cerca del alumnado y en el mundo que hace importante esta unidad?'},
+     {k:'ctx2',t:'t',q:'Identidades, lenguas, conocimientos previos e intereses del alumnado',opc:1},
+     {k:'ctx3',t:'t',q:'Conexiones con aprendizajes anteriores y futuros',opc:1},
+     {k:'ctx4',t:'t',q:'Justificación: ¿por qué esta indagación merece tiempo ahora?'}],
+  ej:'Tema: Cómo nos organizamos · Contexto: el tianguis de la colonia y las compras en línea que hacen sus familias · Justificación: el alumnado compra y vende todos los días, pero no sabe cómo se conectan las personas que producen y las que compran.'},
+ {ph:'Construyan',k:'form',h:'2 · Idea central',ref:'Día 2 · Una idea que viaja, y laboratorio, estación 4.',guide:'significado',
+  f:[{k:'e3',t:'t',q:'Idea central',lights:1,hint:'Una oración que afirma una relación entre conceptos y es verdad en otros lugares y épocas.'},
+     {k:'e3k',t:'k',q:'Pásenla por la aduana: marquen las tres',o:['Afirma una relación entre dos cosas','Sería verdad en otro lugar o en otra época','Se puede investigar de varias maneras']},
+     {k:'e3u',t:'t',q:'¿Qué comprensión transferible queremos que se lleven?',opc:1}],
+  ej:'«Los mercados conectan a quienes producen con quienes consumen.» · Comprensión transferible: un intercambio funciona cuando las dos partes obtienen algo que necesitan.'},
+ {ph:'Construyan',k:'form',h:'2 · Conceptos',ref:'Laboratorio, estación 3. Cada concepto clave trae su pregunta.',
+  f:[{k:'e4',t:'cq',q:'Conceptos clave (elijan dos o tres)',o:CONCEPTS},
+     {k:'e4r',t:'x',q:'Conceptos relacionados',hint:'Conceptos propios de una disciplina que dan profundidad. Ejemplo: intercambio, oferta, demanda.'}],
+  ej:'Conceptos clave: Función, Conexión, Cambio · Relacionados: intercambio, oferta y demanda, transporte'},
+ {ph:'Construyan',k:'form',h:'2 · Líneas de indagación y preguntas',ref:'Laboratorio, estación 4: enunciados, no preguntas ni actividades.',
+  f:[{k:'e5',t:'x',q:'Línea de indagación 1',line:1},{k:'e6',t:'x',q:'Línea de indagación 2',line:1},{k:'e7',t:'x',q:'Línea de indagación 3',line:1},{k:'e7b',t:'x',q:'Línea de indagación 4',line:1,opc:1},
+     {k:'qd',t:'t',q:'Preguntas iniciales del personal docente',hint:'Preguntas para provocar y guiar. Ejemplo: ¿De dónde viene lo que compramos?'},
+     {k:'qa',t:'t',q:'Preguntas, teorías o curiosidades posibles del alumnado',opc:1}],
+  ej:'1. Cómo funciona un mercado (función). 2. Cómo se conectan quienes producen y quienes compran (conexión). 3. Cómo cambian los mercados con el tiempo (cambio). · Pregunta docente: ¿Qué tendría que pasar para que una fruta de Michoacán llegue a tu mesa?'},
+ {ph:'Construyan',k:'form',h:'3 · Objetivos y criterios de logro',ref:'Día 2 · Tres cuadernos: la comprensión se ve en las conexiones, no en la cantidad de datos.',guide:'evidencia',
+  f:[{k:'ob1',t:'t',q:'Objetivos de aprendizaje: qué conocerán, comprenderán y podrán hacer'},
+     {k:'ob2',t:'t',q:'Criterios de logro que se cocrearán o comunicarán al alumnado',hint:'Cómo sabrán ellos mismos que lo lograron.'},
+     {k:'ob3',t:'t',q:'¿Qué sería una evidencia convincente de comprensión y transferencia?'}],
+  ej:'Objetivo: explicar cómo un producto llega de quien lo produce a quien lo compra. · Criterio: «Puedo explicar qué pasa con el precio si algo cambia en el camino». · Evidencia convincente: aplican la idea a un mercado que no estudiaron (una tienda en línea).'},
+ {ph:'Construyan',k:'form',h:'4 · Perfil y enfoques del aprendizaje',ref:'Día 2 · Running Dictation: así se enseña y se hace visible una habilidad ATL. Laboratorio, estación 1.',
+  f:[{k:'e9',t:'c',q:'Atributos del perfil que se desarrollarán de manera explícita (uno o dos)',o:PROFILE},
+     {k:'atl',t:'c',q:'Habilidades de los enfoques del aprendizaje (ATL)',o:['Comunicación','Sociales','Autogestión','Investigación','Pensamiento']},
+     {k:'atl2',t:'t',q:'¿Cómo se enseñarán y harán visibles estas habilidades?'}],
+  ej:'Perfil: Indagadores, Buenos comunicadores · ATL: Investigación (formular preguntas para una entrevista), Sociales · Se hacen visibles con una lista de cotejo que el alumnado usa antes y después de entrevistar a un comerciante.'},
+ {ph:'Construyan',k:'form',h:'5 · Experiencias de aprendizaje',ref:'Días 1 y 2: primero lo vivieron (Ronda 1, la Prueba relámpago) y después lo nombraron. Hagan lo mismo con su alumnado.',
+  f:[{k:'x1',t:'t',q:'Encuentro o provocación inicial'},
+     {k:'e8',t:'cq1',q:'Tipo de indagación principal',o:[['Estructurada','Reciben datos o información para analizar.'],['Guiada','La docente plantea la pregunta; el alumnado decide cómo investigar.'],['Abierta','El alumnado plantea la pregunta y el camino.']]},
+     {k:'x2',t:'t',q:'Oportunidades para indagar, construir significado, probar ideas y revisar'},
+     {k:'x3',t:'t',q:'Conexiones transdisciplinarias necesarias',opc:1},
+     {k:'x4',t:'t',q:'Uso flexible del tiempo, agrupamiento, espacios y recursos',opc:1}],
+  ej:'Provocación: una canasta con productos de lugares distintos; cada equipo rastrea de dónde vino uno. · Guiada · Visitan el tianguis, entrevistan a un comerciante y comparan con una compra en línea.'},
  {ph:'Revisen',k:'review',h:'Revisen y envíen'}
 ]},
 {id:'pruebas',tag:'DÍA 3 · DOS PRUEBAS',title:'Agencia y evidencia',steps:[
- {ph:'Construyan',k:'form',h:'Prueba 1 · Agencia',body:'Agencia: el alumnado tiene voz, elección y propiedad sobre su aprendizaje.',
-  f:[{k:'g1',t:'t',q:'¿Qué decide de verdad el alumnado en su unidad?'}],
-  ej:'Cada equipo elige qué producto del mercado investiga y cómo presenta lo que descubrió.'},
- {ph:'Construyan',k:'form',h:'Prueba 2 · Evidencia',body:'¿Qué van a escuchar o ver a mitad de la unidad, y qué harán con eso?',
-  f:[{k:'g2',t:'t',q:'«Si observamos que…, entonces…»'}],
-  ej:'Si observamos que solo listan productos, entonces mañana visitamos un puesto y preguntamos de dónde viene cada cosa.',guide:'evidencia'},
- {ph:'Construyan',k:'form',h:'Prueba extra · Acceso',
-  f:[{k:'g3',t:'t',q:'¿Qué barrera quitan desde el diseño, sin bajar la meta?',opc:1}],
-  ej:'Pueden mostrar lo aprendido con un mapa explicado en voz alta, no solo por escrito.',guide:'acceso'},
+ {ph:'Construyan',k:'form',h:'Agencia: voz, elección y responsabilidad',ref:'Día 1 · Agencia: la sintieron cuando ustedes pudieron decidir.',
+  f:[{k:'g1',t:'t',q:'Voz: ¿qué opinarán, propondrán o preguntarán?'},
+     {k:'g1b',t:'t',q:'Elección: ¿qué decidirán de verdad?'},
+     {k:'g1c',t:'t',q:'Responsabilidad sobre su aprendizaje: ¿de qué se harán cargo?',opc:1}],
+  ej:'Voz: proponen qué preguntar al comerciante. · Elección: cada equipo elige el producto que rastrea y cómo presenta lo que descubrió. · Responsabilidad: llevan su propio registro de avances.'},
+ {ph:'Construyan',k:'form',h:'6 · Evaluación y evidencias',ref:'Día 2 · Tres cuadernos: la evidencia sirve para decidir el siguiente paso.',guide:'evidencia',
+  f:[{k:'ev1',t:'t',q:'Evidencias iniciales o conocimientos previos que recogerán'},
+     {k:'g2',t:'t',q:'Evaluación formativa: «Si observamos que…, entonces…»'},
+     {k:'ev3',t:'t',q:'Retroalimentación, autoevaluación y evaluación entre pares',opc:1},
+     {k:'ev5',t:'t',q:'Evaluación o demostración final de comprensión'},
+     {k:'ev6',t:'t',q:'¿Cómo documentarán el proceso de aprendizaje?',opc:1},
+     {k:'ev7',t:'k',q:'Comprobación de alineación',o:['Las líneas de indagación aclaran la idea central','Las experiencias investigan las líneas','Las evidencias muestran la idea central']}],
+  ej:'Inicial: dibujan de dónde creen que viene un tomate. · Si observamos que solo listan productos, entonces visitamos un puesto y preguntamos de dónde viene cada cosa. · Final: explican el camino de un producto nuevo y qué pasaría si algo cambiara.'},
+ {ph:'Construyan',k:'form',h:'7 · Identidad, lengua y barreras',ref:'Día 2 · Una barrera menos: cambien el camino, nunca el destino.',guide:'acceso',
+  f:[{k:'g3',t:'t',q:'Barreras que crean los materiales, tiempos, lengua, agrupamiento o formas de respuesta'},
+     {k:'ac2',t:'t',q:'Opciones de acceso, participación y expresión'},
+     {k:'ac3',t:'t',q:'¿Qué desafío valioso se mantiene para todas las personas?'},
+     {k:'ac4',t:'t',q:'¿Cómo se afirmarán las identidades, culturas y lenguas del alumnado?',opc:1}],
+  ej:'Barrera: la entrevista solo en español escrito. · Opciones: grabar la entrevista o explicar con un mapa dibujado. · Desafío que se mantiene: explicar cómo se conectan quienes producen y quienes compran.'},
+ {ph:'Construyan',k:'form',h:'8 · Acción y 9 · Colaboración',ref:'Día 1 · Colaboración: el trabajo del equipo docente también se diseña.',
+  f:[{k:'a8',t:'t',q:'Oportunidades para que la acción surja del aprendizaje (sin imponerla)'},
+     {k:'a8b',t:'t',q:'Posibles aliados de la comunidad',opc:1},
+     {k:'c9',t:'t',q:'Funciones del equipo docente y aportes de especialistas'},
+     {k:'c9b',t:'t',q:'Recursos existentes y recursos que faltan',opc:1}],
+  ej:'Acción posible: el grupo propone un puesto de intercambio en la feria escolar, si surge de ellos. · Aliados: comerciantes del tianguis. · Música y Educación Física aportan los pregones y la logística del puesto.'},
+ {ph:'Revisen',k:'form',h:'Comprobación con cinco lentes',body:'Marquen solo lo que su unidad ya cumple. Lo que quede sin marcar es su tarea para los próximos 30 días.',
+  f:[{k:'lentes',t:'k',q:'Cinco lentes',o:['Agencia y acción: el alumnado influye en decisiones significativas.','Comprensión conceptual y transdisciplinariedad: las conexiones son necesarias y transferibles.','Evaluación y evidencias: las evidencias orientan los siguientes pasos.','Barreras, identidad y lengua: el diseño responde a la variabilidad sin reducir el desafío.','Entornos, recursos y colaboración: las condiciones hacen posible el aprendizaje.']}]},
  {ph:'Revisen',k:'review',h:'Revisen y envíen'}
 ]},
 {id:'compromiso',tag:'DÍA 3 · COMPROMISO',title:'Una cosa importante',steps:[
  {ph:'Construyan',k:'form',h:'Después de la audiencia',
-  f:[{k:'h1',t:'t',q:'La pregunta que trajeron de la audiencia'},{k:'h2',t:'t',q:'Lo que cambiaron en su unidad (una sola cosa)'}]},
+  f:[{k:'h1',t:'t',q:'La pregunta que trajeron de la audiencia'},{k:'h2',t:'t',q:'Lo que cambiaron en su unidad (una sola cosa)'},
+     {k:'r1',t:'t',q:'10 · Reflexión: ¿qué evidencia les haría cambiar el plan a mitad de la unidad?',opc:1}]},
  {ph:'Construyan',k:'form',h:'Compromiso de 30 días',
-  f:[{k:'h3',t:'t',q:'Quién, qué y cuándo'}],ej:'Ana y Luis prueban la línea 2 con 3.º B antes del 15 de noviembre y traen tres cuadernos a la junta.'},
+  f:[{k:'h3',t:'t',q:'Decisión prioritaria'},{k:'h4',t:'t',q:'Primera acción'},{k:'h5',t:'x',q:'Responsable'},{k:'h6',t:'x',q:'Fecha'},{k:'h7',t:'t',q:'Evidencia que revisaremos'}],
+  ej:'Decisión: probar la línea 2 con 3.º B. · Primera acción: la provocación de la canasta. · Responsables: Ana y Luis. · Fecha: antes del 15 de noviembre. · Evidencia: tres cuadernos de alumnos distintos.'},
  {ph:'Revisen',k:'review',h:'Revisen y envíen'}
 ]}]};
 
@@ -489,18 +544,25 @@ function lightsFor(v){v=(v||'').trim();var w=v.split(/\s+/).filter(Boolean).leng
  return [rel,trav,inq];}
 function lightsHTML(k){var L=lightsFor(S.a[k]),v=(S.a[k]||'').trim();var tip=!v?'':!L[0]?'Pista: ¿dice cómo se relacionan dos cosas? Busquen un verbo de relación.':!L[1]?'Pista: ¿nombra un lugar, una fecha o un número? Quítenlo para que viaje.':!L[2]?'Pista: suena a consejo de póster.':'Las pistas se ven bien. Confírmenlo ustedes abajo.';
  return '<div class="lights">'+LNAMES.map(function(n,j){return '<span class="'+(L[j]?'on':'')+'">'+n+'</span>'}).join('')+'</div><div class="small">'+tip+'</div>'}
-function formH(m,st){
- var h=st.body?'<p>'+st.body+'</p>':'';
+function formH(m,st,i){
+ var h=(i>0||m.id!='nucleo')?summary():'';
+ if(st.ref)h+='<div class="refbar">🔗 '+st.ref+'</div>';
+ if(st.body)h+='<p>'+st.body+'</p>';
  st.f.forEach(function(f){h+=field(f)});
  if(st.ej)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Ver un ejemplo</button><div class="rev hide">'+st.ej+'</div>';
- if(st.guide)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Recordar lo del Día 2</button><div class="rev hide" style="background:none;padding:0;border:0">'+takeCard(st.guide)+'</div>';
+ if(st.guide)h+='<button class="tap" onclick="this.classList.add(\'open\');this.nextSibling.classList.remove(\'hide\')">Recordar la tarjeta del Día 2</button><div class="rev hide" style="background:none;padding:0;border:0">'+takeCard(st.guide)+'</div>';
  return h;
 }
+var SUMK=[['UNIDAD','e1'],['GRADO','e1g'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS CLAVE','e4'],['CONCEPTOS RELACIONADOS','e4r'],['LÍNEAS DE INDAGACIÓN',['e5','e6','e7','e7b']],['OBJETIVOS','ob1'],['PERFIL','e9'],['ATL','atl'],['TIPO DE INDAGACIÓN','e8'],['EVALUACIÓN FINAL','ev5'],['AGENCIA · ELECCIÓN','g1b'],['SI OBSERVAMOS…','g2']];
+function aval(k){var v=S.a[k];return Array.isArray(v)?v.join(', '):(v||'')}
+function summary(){var rows='';SUMK.forEach(function(p){var v=Array.isArray(p[1])?p[1].map(aval).filter(Boolean).map(function(x,j){return (j+1)+'. '+x}).join('<br>'):esc(aval(p[1]));if(Array.isArray(p[1]))v=p[1].map(aval).filter(Boolean).map(function(x,j){return (j+1)+'. '+esc(x)}).join('<br>');if(v)rows+='<dt>'+p[0]+'</dt><dd>'+v+'</dd>'});
+ if(!rows)return '';return '<details class="sum"'+(S.sumClosed?'':' open')+' ontoggle="S.sumClosed=!this.open;sv()"><summary>📋 Su unidad hasta ahora</summary><dl>'+rows+'</dl></details>'}
+function lineWarn(v){v=(v||'').trim();if(!v)return '';if(/\?\s*$/.test(v)||/^¿/.test(v))return 'Escríbanla como enunciado, no como pregunta.';if(/^(hacer|elaborar|realizar|dibujar|visitar|crear|investigar|leer|escribir|presentar)\b/i.test(v))return 'Eso suena a actividad. Una línea dice qué se va a comprender.';return ''}
 function field(f){
- var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>';
+ var v=S.a[f.k],lab='<label>'+f.q+(f.opc?'<span class="opc">OPCIONAL</span>':'')+'</label>'+(f.hint?'<div class="hint">'+f.hint+'</div>':'');
  if(f.t=='t')return '<div class="f">'+lab+'<textarea oninput="setv(\''+f.k+'\',this.value'+(f.lights?',1':'')+')">'+esc(v)+'</textarea>'+(f.lights?'<div id="lights_'+f.k+'">'+lightsHTML(f.k)+'</div>':'')+'</div>';
- if(f.t=='x')return '<div class="f">'+lab+'<input type="text" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value)"></div>';
- if(f.t=='s')return '<div class="f">'+lab+'<select onchange="setv(\''+f.k+'\',this.value)"><option value="">Elijan…</option>'+f.o.map(function(o){return '<option'+(v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select></div>';
+ if(f.t=='x')return '<div class="f">'+lab+'<input type="text" value="'+esc(v)+'" oninput="setv(\''+f.k+'\',this.value'+(f.line?',2':'')+')">'+(f.line?'<div class="warn" id="lw_'+f.k+'">'+lineWarn(v)+'</div>':'')+'</div>';
+ if(f.t=='s')return '<div class="f">'+lab+'<select onchange="setv(\''+f.k+'\',this.value'+(f.desc?',3':'')+')"><option value="">Elijan…</option>'+f.o.map(function(o){return '<option'+(v==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select>'+(f.desc?'<div class="hint" id="td_'+f.k+'" style="margin-top:6px">'+(TDESC[v]||'')+'</div>':'')+'</div>';
  if(f.t=='c'||f.t=='cq'||f.t=='cq1'){var a=v||[];if(f.t=='cq1'&&!Array.isArray(a))a=[a];
   return '<div class="f">'+lab+'<div class="chips">'+f.o.map(function(o,i){var n=Array.isArray(o)?o[0]:o,sub=Array.isArray(o)?'<small>'+o[1]+'</small>':'';return '<button class="chip'+(a.indexOf(n)>-1?' sel':'')+'" onclick="tog(\''+f.k+'\','+i+',this)">'+n+sub+'</button>'}).join('')+'</div></div>'}
  if(f.t=='k'){var b=v||[];return '<div class="f">'+lab+f.o.map(function(o,i){return '<label class="chk"><input type="checkbox"'+(b.indexOf(o)>-1?' checked':'')+' onchange="tog(\''+f.k+'\','+i+')"> '+o+'</label>'}).join('')+'</div>'}
@@ -511,10 +573,10 @@ function findF(k){var r;MODS.d3.forEach(function(m){allFields(m).forEach(functio
 function val(f){var v=S.a[f.k];if(Array.isArray(v))return v.join(', ');return v||''}
 function reviewH(m){
  var h='<p>Revisen. Si algo falta, toquen «Atrás». Cuando estén listos, envíen.</p>';
- allFields(m).forEach(function(f){var v=val(f);h+='<div class="item"><div class="meta">'+f.q+(f.opc?' · opcional':'')+'</div><div style="font-size:15px;font-weight:600">'+(v?esc(v):'<span style="color:var(--bad)">Falta</span>')+'</div></div>'});
+ allFields(m).forEach(function(f){var v=val(f);h+='<div class="item"><div class="meta">'+f.q+(f.opc?' · opcional':'')+'</div><div style="font-size:15px;font-weight:600">'+(v?esc(v):f.opc?'<span style="color:var(--grey)">Opcional · sin llenar</span>':'<span style="color:var(--bad)">Falta</span>')+'</div></div>'});
  return h+sendBtn(m.id);
 }
-function setv(k,v,lt){S.a[k]=v;sv();if(lt){var e=document.getElementById('lights_'+k);if(e)e.innerHTML=lightsHTML(k)}}
+function setv(k,v,lt){S.a[k]=v;sv();if(lt==1){var e=document.getElementById('lights_'+k);if(e)e.innerHTML=lightsHTML(k)}if(lt==2){var w=document.getElementById('lw_'+k);if(w)w.textContent=lineWarn(v)}if(lt==3){var t=document.getElementById('td_'+k);if(t)t.textContent=TDESC[v]||''}}
 function tog(k,i,btn){var f=findF(k),o=f.o[i];o=Array.isArray(o)?o[0]:o;
  if(f.t=='cq1'){S.a[k]=o;sv();btn.parentNode.querySelectorAll('.chip').forEach(function(c){c.classList.remove('sel')});btn.classList.add('sel');return}
  var a=S.a[k]||[];var j=a.indexOf(o);if(j>-1)a.splice(j,1);else a.push(o);S.a[k]=a;sv();if(btn)btn.classList.toggle('sel')}
@@ -562,7 +624,7 @@ function present(){
   add('UNA IDEA QUE VIAJA',sg.tileok);add('IDEA QUE VIAJA VS. PÓSTER',S.a.b_line);
   if(ev.so&&ev.so[2]!=null)add('SI OBSERVAMOS…',soSentence(2));
   add('LA PREGUNTA QUE ABRE',S.a.c_line);}
- else{[['UNIDAD','e1'],['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS','e4'],['LÍNEAS DE INDAGACIÓN','e5'],['','e6'],['','e7'],['AGENCIA','g1'],['EVIDENCIA','g2']].forEach(function(p){var f=findF(p[1]);add(p[0],f?val(f):'')})}
+ else{add('UNIDAD',[aval('e1'),aval('e1g')].filter(Boolean).join(' · '));[['TEMA','e2'],['IDEA CENTRAL','e3'],['CONCEPTOS CLAVE','e4'],['CONCEPTOS RELACIONADOS','e4r'],['LÍNEAS DE INDAGACIÓN','e5'],['','e6'],['','e7'],['','e7b'],['PROVOCACIÓN','x1'],['EVIDENCIA CONVINCENTE','ob3'],['AGENCIA · ELECCIÓN','g1b'],['SI OBSERVAMOS…','g2'],['EVALUACIÓN FINAL','ev5'],['BARRERA QUE QUITAMOS','ac2']].forEach(function(p){add(p[0],aval(p[1]))})}
  var e=document.createElement('div');e.innerHTML=h+'</div>';document.body.appendChild(e.firstChild);
 }
 render();
